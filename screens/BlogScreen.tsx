@@ -1,98 +1,28 @@
-import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../navigation/StackNavigator";
-import { ImageSourcePropType, Image } from "react-native";
-
-export default function WelcomeScreen() {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const today = new Date().toLocaleDateString('es-MX', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
-
-
-  return (
-    <View style={styles.container}>
-      {/* Encabezado */}
-      <View style={styles.header}>
-        <View style={styles.profileCircle} />
-        <View style={styles.headerInfo}>
-          <Text style={styles.patientId}>Identificador#</Text>
-          <Text style={styles.date}>{today}</Text>
-        </View>
-      </View>
-
-      {/* Cuerpo con botones */}
-      <ScrollView contentContainerStyle={styles.body}>
-        <View style={styles.row}>
-          <ModuleCard
-            title='Medicina General'
-            color="#BFA47A"
-            icon={require("../assets/icons/medicine.png")}
-          />
-          <ModuleCard
-            title="Neuropsicología"
-            color="#3D4D9D"
-            icon={require("../assets/icons/neuro.png")}
-          />
-          <ModuleCard
-            title="órtesis y Prótesis"
-            color="#E5C44A"
-            icon={require("../assets/icons/orthotics.png")}
-          />
-        </View>
-        <View style={styles.row}>
-          <ModuleCard
-            title="Nutrición"
-            color="#E89CC5"
-            icon={require("../assets/icons/nutrition.png")}
-          />
-          <ModuleCard
-            title="Fisioterapia"
-            color="#83D0A0"
-            icon={require("../assets/icons/physio.png")}
-          />
-          <ModuleCard
-            title="General"
-            color="#9D9D9D"
-            icon={require("../assets/icons/admin.png")}
-          />
-        </View>
-      </ScrollView>
-
-      {/* Botón cerrar sesión */}
-      <TouchableOpacity
-        style={styles.logoutButton}
-        onPress={() => navigation.replace("Login")}
-      >
-        <Text style={styles.logoutText}>Cerrar Sesión</Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
+// screens/BlogScreen.tsx
+import React, { useState } from 'react';
+import { ScrollView, StyleSheet, View, Text, TouchableOpacity, ImageSourcePropType, Image } from 'react-native';
+import { PostCard } from '../components/PostCard';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../navigation/StackNavigator';
+import HeaderUser from '../components/HeaderUser';
 
 const ModuleCard = ({
   title,
   color,
   icon,
+  selected,
+  onPress,
 }: {
   title: string;
   color: string;
   icon: ImageSourcePropType;
+  selected: boolean;
+  onPress: () => void;
 }) => (
   <TouchableOpacity
-    style={[styles.card, { backgroundColor: `${color}22` }]}
-    onPress={() => console.log(`Clicked on ${title}`)}
+    style={[styles.card, { backgroundColor: selected ? color : `${color}22` }]}
+    onPress={onPress}
     activeOpacity={0.7}
   >
     <View style={[styles.cardIcon, { backgroundColor: color }]}>
@@ -102,58 +32,98 @@ const ModuleCard = ({
   </TouchableOpacity>
 );
 
+export default function BlogScreen() {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const [selected, setSelected] = useState<string>('');
+
+  const filters = [
+    { title: 'Medicina General', color: '#BFA47A', icon: require('../assets/icons/medicine.png') },
+    { title: 'Neuropsicología', color: '#3D4D9D', icon: require('../assets/icons/neuro.png') },
+    { title: 'Órtesis y Prótesis', color: '#E5C44A', icon: require('../assets/icons/orthotics.png') },
+    { title: 'Nutrición', color: '#E89CC5', icon: require('../assets/icons/nutrition.png') },
+    { title: 'Fisioterapia', color: '#83D0A0', icon: require('../assets/icons/physio.png') },
+    { title: 'General', color: '#9D9D9D', icon: require('../assets/icons/admin.png') },
+  ];
+
+  const posts = [
+    {
+      author: 'Dr. Walls',
+      title: 'Importancia de la postura',
+      area: 'Fisioterapia',
+      areaColor: '#83D0A0',
+      description: 'Una guía práctica para mantener una postura saludable en tu día a día.',
+      date: '4 de julio de 2025',
+      image: require('../assets/prosthetic.jpg'),
+    },
+  ];
+
+  return (
+    <View style={styles.container}>
+      {/* Componente de encabezado con barra de progreso */}
+      <HeaderUser currentStage={1} />
+
+      {/* Cuerpo del blog */}
+      <ScrollView contentContainerStyle={styles.body}>
+        <View style={styles.row}>
+          {filters.slice(0, 3).map((f) => (
+            <ModuleCard
+              key={f.title}
+              title={f.title}
+              color={f.color}
+              icon={f.icon}
+              selected={selected === f.title}
+              onPress={() => setSelected(f.title)}
+            />
+          ))}
+        </View>
+        <View style={styles.row}>
+          {filters.slice(3).map((f) => (
+            <ModuleCard
+              key={f.title}
+              title={f.title}
+              color={f.color}
+              icon={f.icon}
+              selected={selected === f.title}
+              onPress={() => setSelected(f.title)}
+            />
+          ))}
+        </View>
+
+        {/* Publicaciones tipo Instagram */}
+        {posts.map((post, index) => (
+          <PostCard key={index} {...post} />
+        ))}
+      </ScrollView>
+
+      {/* Botón cerrar sesión */}
+      <TouchableOpacity
+        style={styles.logoutButton}
+        onPress={() => navigation.replace('Login')}
+      >
+        <Text style={styles.logoutText}>Cerrar Sesión</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
-
-  // Encabezado
-  header: {
-    backgroundColor: "#003087",
-    paddingTop: 50,
-    paddingBottom: 20,
-    paddingHorizontal: 20,
-    flexDirection: "row",
-    alignItems: "center",
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-  },
-  profileCircle: {
-    width: 50,
-    height: 50,
-    backgroundColor: "white",
-    borderRadius: 25,
-    marginRight: 15,
-  },
-  headerInfo: {
-    flexDirection: "column",
-  },
-  patientId: {
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-  date: {
-    color: "#FFD700",
-    fontSize: 12,
-  },
-
-  // Cuerpo
+  container: { flex: 1, backgroundColor: '#fff' },
   body: {
     paddingVertical: 30,
     paddingHorizontal: 15,
-    alignItems: "center",
   },
   row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 20,
-    width: "100%",
+    width: '100%',
   },
   card: {
-    width: "30%",
+    width: '30%',
     aspectRatio: 1,
     borderRadius: 15,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 10,
   },
   cardIcon: {
@@ -161,30 +131,30 @@ const styles = StyleSheet.create({
     height: 30,
     borderRadius: 15,
     marginBottom: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   cardText: {
     fontSize: 12,
-    textAlign: "center",
-    color: "#333",
-    fontWeight: "500",
+    textAlign: 'center',
+    color: '#333',
+    fontWeight: '500',
   },
   iconImage: {
     width: 30,
     height: 30,
   },
-
-  // Cerrar sesión
   logoutButton: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 20,
-    alignSelf: "center",
-    backgroundColor: "#003087",
+    alignSelf: 'center',
+    backgroundColor: '#003087',
     paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 12,
   },
   logoutText: {
-    color: "white",
-    fontWeight: "bold",
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
