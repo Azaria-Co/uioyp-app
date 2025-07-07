@@ -1,6 +1,6 @@
 // screens/BlogScreen.tsx
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, View, Text, TouchableOpacity, ImageSourcePropType, Image } from 'react-native';
+import { ScrollView, StyleSheet, View, Text, TouchableOpacity, ImageSourcePropType, Image, useWindowDimensions } from 'react-native';
 import { PostCard } from '../components/PostCard';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -13,15 +13,17 @@ const ModuleCard = ({
   icon,
   selected,
   onPress,
+  cardWidth,
 }: {
   title: string;
   color: string;
   icon: ImageSourcePropType;
   selected: boolean;
   onPress: () => void;
+  cardWidth: number;
 }) => (
   <TouchableOpacity
-    style={[styles.card, { backgroundColor: selected ? color : `${color}22` }]}
+    style={[styles.card, { backgroundColor: selected ? color : `${color}22`, width: cardWidth }]}
     onPress={onPress}
     activeOpacity={0.7}
   >
@@ -35,6 +37,7 @@ const ModuleCard = ({
 export default function BlogScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [selected, setSelected] = useState<string>('');
+  const { width } = useWindowDimensions();
 
   const filters = [
     { title: 'Medicina General', color: '#BFA47A', icon: require('../assets/icons/medicine.png') },
@@ -44,18 +47,30 @@ export default function BlogScreen() {
     { title: 'Fisioterapia', color: '#83D0A0', icon: require('../assets/icons/physio.png') },
     { title: 'General', color: '#9D9D9D', icon: require('../assets/icons/admin.png') },
   ];
-
   const posts = [
     {
       author: 'Dr. Walls',
       title: 'Importancia de la postura',
       area: 'Fisioterapia',
       areaColor: '#83D0A0',
-      description: 'Una guía práctica para mantener una postura saludable en tu día a día.',
+      description: 'Una guía práctica para mantener una postura saludable en tu día a día. "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."',
       date: '4 de julio de 2025',
       image: require('../assets/prosthetic.jpg'),
     },
+    {
+      author: 'Dr. Juan López',
+      title: '¿Qué es una órtesis?',
+      area: 'Órtesis y Prótesis',
+      areaColor: '#E5C44A',
+      description: 'Explicación sencilla sobre órtesis y su importancia en la rehabilitación.',
+
+      date: '20 de junio de 2025',
+      // No image
+    },
   ];
+
+  // Responsive: calcula el ancho de las tarjetas según el ancho de pantalla
+  const cardWidth = width > 600 ? (width - 60) / 6 : (width - 50) / 3;
 
   return (
     <View style={styles.container}>
@@ -73,6 +88,7 @@ export default function BlogScreen() {
               icon={f.icon}
               selected={selected === f.title}
               onPress={() => setSelected(f.title)}
+              cardWidth={cardWidth}
             />
           ))}
         </View>
@@ -85,6 +101,7 @@ export default function BlogScreen() {
               icon={f.icon}
               selected={selected === f.title}
               onPress={() => setSelected(f.title)}
+              cardWidth={cardWidth}
             />
           ))}
         </View>
@@ -119,12 +136,14 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   card: {
-    width: '30%',
+    // width se define dinámicamente
     aspectRatio: 1,
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 10,
+    minWidth: 90,
+    maxWidth: 180,
   },
   cardIcon: {
     width: 30,
