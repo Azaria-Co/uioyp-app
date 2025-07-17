@@ -1,5 +1,5 @@
 // screens/BlogScreen.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollView, StyleSheet, View, Text, TouchableOpacity, ImageSourcePropType, Image, useWindowDimensions } from 'react-native';
 import { PostCard } from '../components/PostCard';
 import { useNavigation } from '@react-navigation/native';
@@ -23,14 +23,22 @@ const ModuleCard = ({
   cardWidth: number;
 }) => (
   <TouchableOpacity
-    style={[styles.card, { backgroundColor: selected ? color : `${color}22`, width: cardWidth }]}
+    style={[
+      styles.card,
+      {
+        backgroundColor: '#fff', // Blanco de fondo
+        borderColor: selected ? color : '#ccc',
+        borderWidth: selected ? 2 : 1,
+        width: cardWidth,
+      },
+    ]}
     onPress={onPress}
-    activeOpacity={0.7}
+    activeOpacity={0.8}
   >
     <View style={[styles.cardIcon, { backgroundColor: color }]}>
       <Image source={icon} style={styles.iconImage} resizeMode="contain" />
     </View>
-    <Text style={styles.cardText}>{title}</Text>
+    <Text style={[styles.cardText, { color }]}>{title}</Text>
   </TouchableOpacity>
 );
 
@@ -136,32 +144,33 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   card: {
-    // width se define dinámicamente
     aspectRatio: 1,
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 10,
+    backgroundColor: '#fff',
     minWidth: 90,
     maxWidth: 180,
+    borderWidth: 1,
+    borderColor: '#ccc',
   },
   cardIcon: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 55,
+    height: 55,
+    borderRadius: 27.5,
     marginBottom: 10,
     justifyContent: 'center',
-    alignItems: 'center',
+   alignItems: 'center',
   },
   cardText: {
-    fontSize: 12,
+    fontSize: 13,
     textAlign: 'center',
-    color: '#333',
-    fontWeight: '500',
+    fontWeight: '600',
   },
   iconImage: {
     width: 30,
-    height: 30,
+   height: 30,
   },
   logoutButton: {
     position: 'absolute',
