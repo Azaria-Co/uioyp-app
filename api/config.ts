@@ -1,3 +1,3 @@
-export const API_URL = "http://[IP_LOCAL]:3000"; // Cámbialo por tu IP local
+export const API_URL = "http://[ip change]:3000"; // Cámbialo por tu IP local
 
 
