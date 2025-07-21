@@ -13,11 +13,24 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     try {
-      const token = await login(nombreUs);
-      await saveToken(token);
+      const response = await login(nombreUs);
+      // response debe ser { token, rol }
+      if (!response || !response.token || typeof response.rol !== 'number') {
+        throw new Error('Respuesta inválida del servidor');
+      }
+      await saveToken(response.token);
       console.log('Token guardado correctamente');
 
-      navigation.navigate('Blog'); // Cambia esto a tu pantalla principal
+      // Redirige según el rol
+      if (response.rol === 1) {
+        navigation.replace('AdminScreen'); // Admin
+      } else if (response.rol === 2) {
+        navigation.replace('HomeSpecialist'); // Especialista
+      } else if (response.rol === 3) {
+        navigation.replace('Blog'); // Paciente
+      } else {
+        Alert.alert('Error', 'Rol de usuario desconocido');
+      }
     } catch (error: any) {
       Alert.alert("Error", error.message || "No se pudo iniciar sesión");
     }

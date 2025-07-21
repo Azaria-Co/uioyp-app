@@ -1,11 +1,12 @@
-// screens/BlogScreen.tsx
-import React, { useState, useEffect } from 'react';
+// screens/pacientes/BlogScreen.tsx
+import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View, Text, TouchableOpacity, ImageSourcePropType, Image, useWindowDimensions } from 'react-native';
-import { PostCard } from '../components/PostCard';
+import { PostCard } from '../../components/PostCard';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation/StackNavigator';
-import HeaderUser from '../components/HeaderUser';
+import { RootStackParamList } from '../../navigation/StackNavigator';
+import HeaderUser from '../../components/HeaderUser';
+import LogoutButton from '../../components/LogoutButton';
 
 const ModuleCard = ({
   title,
@@ -26,7 +27,7 @@ const ModuleCard = ({
     style={[
       styles.card,
       {
-        backgroundColor: '#fff', // Blanco de fondo
+        backgroundColor: '#fff',
         borderColor: selected ? color : '#ccc',
         borderWidth: selected ? 2 : 1,
         width: cardWidth,
@@ -35,7 +36,7 @@ const ModuleCard = ({
     onPress={onPress}
     activeOpacity={0.8}
   >
-    <View style={[styles.cardIcon, { backgroundColor: color }]}>
+    <View style={[styles.cardIcon, { backgroundColor: color }]}> 
       <Image source={icon} style={styles.iconImage} resizeMode="contain" />
     </View>
     <Text style={[styles.cardText, { color }]}>{title}</Text>
@@ -48,12 +49,12 @@ export default function BlogScreen() {
   const { width } = useWindowDimensions();
 
   const filters = [
-    { title: 'Medicina General', color: '#BFA47A', icon: require('../assets/icons/medicine.png') },
-    { title: 'Neuropsicología', color: '#3D4D9D', icon: require('../assets/icons/neuro.png') },
-    { title: 'Órtesis y Prótesis', color: '#E5C44A', icon: require('../assets/icons/orthotics.png') },
-    { title: 'Nutrición', color: '#E89CC5', icon: require('../assets/icons/nutrition.png') },
-    { title: 'Fisioterapia', color: '#83D0A0', icon: require('../assets/icons/physio.png') },
-    { title: 'General', color: '#9D9D9D', icon: require('../assets/icons/admin.png') },
+    { title: 'Medicina General', color: '#BFA47A', icon: require('../../assets/icons/medicine.png') },
+    { title: 'Neuropsicología', color: '#3D4D9D', icon: require('../../assets/icons/neuro.png') },
+    { title: 'Órtesis y Prótesis', color: '#E5C44A', icon: require('../../assets/icons/orthotics.png') },
+    { title: 'Nutrición', color: '#E89CC5', icon: require('../../assets/icons/nutrition.png') },
+    { title: 'Fisioterapia', color: '#83D0A0', icon: require('../../assets/icons/physio.png') },
+    { title: 'General', color: '#9D9D9D', icon: require('../../assets/icons/admin.png') },
   ];
   const posts = [
     {
@@ -63,7 +64,7 @@ export default function BlogScreen() {
       areaColor: '#83D0A0',
       description: 'Una guía práctica para mantener una postura saludable en tu día a día. "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."',
       date: '4 de julio de 2025',
-      image: require('../assets/prosthetic.jpg'),
+      image: require('../../assets/prosthetic.jpg'),
     },
     {
       author: 'Dr. Juan López',
@@ -71,7 +72,6 @@ export default function BlogScreen() {
       area: 'Órtesis y Prótesis',
       areaColor: '#E5C44A',
       description: 'Explicación sencilla sobre órtesis y su importancia en la rehabilitación.',
-
       date: '20 de junio de 2025',
       // No image
     },
@@ -121,12 +121,7 @@ export default function BlogScreen() {
       </ScrollView>
 
       {/* Botón cerrar sesión */}
-      <TouchableOpacity
-        style={styles.logoutButton}
-        onPress={() => navigation.replace('Login')}
-      >
-        <Text style={styles.logoutText}>Cerrar Sesión</Text>
-      </TouchableOpacity>
+      <LogoutButton />
     </View>
   );
 }
@@ -161,7 +156,7 @@ const styles = StyleSheet.create({
     borderRadius: 27.5,
     marginBottom: 10,
     justifyContent: 'center',
-   alignItems: 'center',
+    alignItems: 'center',
   },
   cardText: {
     fontSize: 13,
@@ -170,7 +165,7 @@ const styles = StyleSheet.create({
   },
   iconImage: {
     width: 30,
-   height: 30,
+    height: 30,
   },
   logoutButton: {
     position: 'absolute',
