@@ -16,7 +16,7 @@ export default function RolePicker({ rol, setRol }: RolePickerProps) {
         style={styles.picker}
         onValueChange={setRol}
       >
-        <Picker.Item label="Selecciona un rol" value="" />
+        <Picker.Item label="Selecciona un rol" value="" enabled={false} />
         <Picker.Item label="Administrador" value="1" />
         <Picker.Item label="Especialista" value="2" />
         <Picker.Item label="Paciente" value="3" />

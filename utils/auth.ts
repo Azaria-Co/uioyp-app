@@ -1,3 +1,40 @@
+import { jwtDecode } from 'jwt-decode';
+const USERID_KEY = 'uioyp-idus';
+export function getIdUsFromToken(token: string): number | null {
+  try {
+    const decoded: any = jwtDecode(token);
+    return decoded.id || null;
+  } catch (e) {
+    console.error('Error decodificando token', e);
+    return null;
+  }
+}
+
+export async function saveIdUs(id_us: number) {
+  try {
+    await AsyncStorage.setItem(USERID_KEY, id_us.toString());
+  } catch (error) {
+    console.error('Error guardando id_us', error);
+  }
+}
+
+export async function getIdUs(): Promise<number | null> {
+  try {
+    const val = await AsyncStorage.getItem(USERID_KEY);
+    return val ? Number(val) : null;
+  } catch (error) {
+    console.error('Error obteniendo id_us', error);
+    return null;
+  }
+}
+
+export async function clearIdUs() {
+  try {
+    await AsyncStorage.removeItem(USERID_KEY);
+  } catch (error) {
+    console.error('Error eliminando id_us', error);
+  }
+}
 // utils/auth.ts
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

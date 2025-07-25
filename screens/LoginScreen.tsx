@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/StackNavigator';
 import { login } from '../api/usuarios';
-import { saveToken, saveNombreUs } from '../utils/auth';
+import { saveToken, saveNombreUs, getIdUsFromToken, saveIdUs } from '../utils/auth';
 
 
 export default function LoginScreen() {
@@ -18,9 +18,18 @@ export default function LoginScreen() {
       if (!response || !response.token || typeof response.rol !== 'number') {
         throw new Error('Respuesta inválida del servidor');
       }
+
       await saveToken(response.token);
       await saveNombreUs(response.nombre_us);
-      console.log('Token guardado correctamente');
+      // Extrae y guarda id_us del token
+      const id_us = getIdUsFromToken(response.token);
+      if (id_us) {
+        await saveIdUs(id_us);
+        console.log('id_us guardado:', id_us);
+      } else {
+        console.warn('No se pudo extraer id_us del token');
+      }
+      console.log('Token y datos guardados correctamente');
 
       // Redirige según el rol
       if (response.rol === 1) {
