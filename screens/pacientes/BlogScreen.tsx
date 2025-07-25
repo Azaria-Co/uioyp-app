@@ -1,7 +1,8 @@
 // screens/pacientes/BlogScreen.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollView, StyleSheet, View, Text, TouchableOpacity, ImageSourcePropType, Image, useWindowDimensions } from 'react-native';
 import { PostCard } from '../../components/PostCard';
+import { getPosts } from '../../api/posts';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/StackNavigator';
@@ -56,26 +57,16 @@ export default function BlogScreen() {
     { title: 'Fisioterapia', color: '#83D0A0', icon: require('../../assets/icons/physio.png') },
     { title: 'General', color: '#9D9D9D', icon: require('../../assets/icons/admin.png') },
   ];
-  const posts = [
-    {
-      author: 'Dr. Walls',
-      title: 'Importancia de la postura',
-      area: 'Fisioterapia',
-      areaColor: '#83D0A0',
-      description: 'Una guía práctica para mantener una postura saludable en tu día a día. "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."',
-      date: '4 de julio de 2025',
-      image: require('../../assets/prosthetic.jpg'),
-    },
-    {
-      author: 'Dr. Juan López',
-      title: '¿Qué es una órtesis?',
-      area: 'Órtesis y Prótesis',
-      areaColor: '#E5C44A',
-      description: 'Explicación sencilla sobre órtesis y su importancia en la rehabilitación.',
-      date: '20 de junio de 2025',
-      // No image
-    },
-  ];
+  const [posts, setPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    getPosts()
+      .then((data) => setPosts(Array.isArray(data) ? data : []))
+      .catch(() => setPosts([]))
+      .finally(() => setLoading(false));
+  }, []);
 
   // Responsive: calcula el ancho de las tarjetas según el ancho de pantalla
   const cardWidth = width > 600 ? (width - 60) / 6 : (width - 50) / 3;
@@ -115,9 +106,36 @@ export default function BlogScreen() {
         </View>
 
         {/* Publicaciones tipo Instagram */}
-        {posts.map((post, index) => (
-          <PostCard key={index} {...post} />
-        ))}
+        {loading ? (
+          <Text style={{ textAlign: 'center', marginTop: 30 }}>Cargando publicaciones...</Text>
+        ) : posts.length === 0 ? (
+          <Text style={{ textAlign: 'center', marginTop: 30 }}>No hay publicaciones.</Text>
+        ) : (
+          posts.map((post, index) => {
+            const areaColors: Record<string, string> = {
+              'Fisioterapia': '#83D0A0',
+              'Órtesis y Prótesis': '#E5C44A',
+              'Neuropsicología': '#3D4D9D',
+              'Medicina General': '#BFA47A',
+              'Nutrición': '#E89CC5',
+              'General': '#9D9D9D',
+            };
+            const areaStr = String(post.area || (post.especialista && post.especialista.area) || '');
+            const author = post.especialista && post.especialista.nombre_us ? post.especialista.nombre_us : (post.autor || post.author || 'Especialista');
+            return (
+              <PostCard
+                key={post.id || index}
+                author={author}
+                title={post.titulo || post.title || ''}
+                area={areaStr}
+                areaColor={areaColors[areaStr] || '#003087'}
+                description={post.texto || post.description || ''}
+                date={post.fecha || post.date || ''}
+                // image={post.image} // multimedia no implementado aún
+              />
+            );
+          })
+        )}
       </ScrollView>
 
       {/* Botón cerrar sesión */}
