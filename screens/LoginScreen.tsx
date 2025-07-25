@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/StackNavigator';
 import { login } from '../api/usuarios';
-import { saveToken } from '../utils/auth';
+import { saveToken, saveNombreUs } from '../utils/auth';
 
 
 export default function LoginScreen() {
@@ -19,6 +19,7 @@ export default function LoginScreen() {
         throw new Error('Respuesta inválida del servidor');
       }
       await saveToken(response.token);
+      await saveNombreUs(response.nombre_us);
       console.log('Token guardado correctamente');
 
       // Redirige según el rol

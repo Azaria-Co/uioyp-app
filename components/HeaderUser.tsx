@@ -1,5 +1,6 @@
 // components/HeaderUser.tsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getNombreUs } from '../utils/auth';
 import { View, Text, StyleSheet } from 'react-native';
 
 interface HeaderUserProps {
@@ -7,18 +8,23 @@ interface HeaderUserProps {
 }
 
 export default function HeaderUser({ currentStage }: HeaderUserProps) {
+  const [nombreUs, setNombreUs] = useState<string | null>(null);
   const today = new Date().toLocaleDateString('es-MX', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
   });
 
+  useEffect(() => {
+    getNombreUs().then(setNombreUs);
+  }, []);
+
   return (
     <View style={styles.headerWrapper}>
       <View style={styles.leftSection}>
         <View style={styles.profileCircle} />
         <View style={styles.userInfo}>
-          <Text style={styles.identifier}>Identificador#</Text>
+          <Text style={styles.identifier}>{nombreUs ? nombreUs : 'Identificador#'}</Text>
           <Text style={styles.date}>{today}</Text>
         </View>
       </View>

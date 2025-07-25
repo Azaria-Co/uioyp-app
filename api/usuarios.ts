@@ -16,5 +16,5 @@ export async function login(nombre_us: string) {
     throw new Error(data.error || "Error al iniciar sesión");
   }
 
-  return { token: data.token, rol: data.rol };
+  return { token: data.token, rol: data.rol, nombre_us: data.nombre_us };
 }
