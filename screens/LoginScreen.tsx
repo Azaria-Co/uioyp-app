@@ -25,7 +25,6 @@ export default function LoginScreen() {
       const id_us = getIdUsFromToken(response.token);
       if (id_us) {
         await saveIdUs(id_us);
-        console.log('id_us guardado:', id_us);
       } else {
         console.warn('No se pudo extraer id_us del token');
       }

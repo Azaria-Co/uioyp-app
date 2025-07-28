@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, useWindowDimensions } from 'react-native';
 import { PostMedia } from './PostMedia';
 import PostMediaModal from './PostMediaModal';
+import LikeButton from './LikeButton';
+
 
 
 interface PostCardProps {

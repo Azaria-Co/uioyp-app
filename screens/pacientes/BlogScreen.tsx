@@ -114,10 +114,10 @@ export default function BlogScreen() {
           posts.map((post, index) => {
             const areaColors: Record<string, string> = {
               'Fisioterapia': '#83D0A0',
-              'Órtesis y Prótesis': '#E5C44A',
-              'Neuropsicología': '#3D4D9D',
+              'Ortesis y Protesis': '#E5C44A',
+              'Neuropsicologia': '#3D4D9D',
               'Medicina General': '#BFA47A',
-              'Nutrición': '#E89CC5',
+              'Nutricion': '#E89CC5',
               'General': '#9D9D9D',
             };
             const areaStr = String(post.area || (post.especialista && post.especialista.area) || '');

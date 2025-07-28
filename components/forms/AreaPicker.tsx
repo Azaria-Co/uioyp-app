@@ -9,12 +9,12 @@ interface AreaPickerProps {
 
 const areas = [
   '',
-  'Neuropsicología',
-  'Órtesis y Prótesis',
+  'Neuropsicologia',
+  'Ortesis y Protesis',
   'Medicina General',
-  'Nutrición',
+  'Nutricion',
   'Fisioterapia',
-  'Investigación',
+  'Investigacion',
 ];
 
 export default function AreaPicker({ area, setArea }: AreaPickerProps) {

@@ -1,3 +1,4 @@
+// utils/auth.ts
 import { jwtDecode } from 'jwt-decode';
 const USERID_KEY = 'uioyp-idus';
 export function getIdUsFromToken(token: string): number | null {
