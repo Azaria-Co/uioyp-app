@@ -123,15 +123,15 @@ export default function BlogScreen() {
             const areaStr = String(post.area || (post.especialista && post.especialista.area) || '');
             const author = post.especialista && post.especialista.nombre_us ? post.especialista.nombre_us : (post.autor || post.author || 'Especialista');
             return (
-              <PostCard
+              <PostCard  
                 key={post.id || index}
+                id={post.id}
                 author={author}
                 title={post.titulo || post.title || ''}
                 area={areaStr}
                 areaColor={areaColors[areaStr] || '#003087'}
                 description={post.texto || post.description || ''}
                 date={post.fecha || post.date || ''}
-                // image={post.image} // multimedia no implementado aún
               />
             );
           })

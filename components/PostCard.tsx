@@ -1,13 +1,11 @@
-// components/PostCard.tsx
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, useWindowDimensions } from 'react-native';
 import { PostMedia } from './PostMedia';
 import PostMediaModal from './PostMediaModal';
 import LikeButton from './LikeButton';
 
-
-
 interface PostCardProps {
+  id: number; // ← Agregamos esto
   author: string;
   title: string;
   area: string;
@@ -16,7 +14,9 @@ interface PostCardProps {
   date: string;
   image?: any;
 }
+
 export const PostCard: React.FC<PostCardProps> = ({
+  id, // ← destructuramos
   author,
   title,
   area,
@@ -26,22 +26,20 @@ export const PostCard: React.FC<PostCardProps> = ({
   image,
 }) => {
   const { width } = useWindowDimensions();
-  const [liked, setLiked] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
-  // 👉 Lógica de truncado
   const MAX_WORDS = 25;
   const words = description.split(' ');
   const isLong = words.length > MAX_WORDS;
   const preview = words.slice(0, MAX_WORDS).join(' ') + '...';
 
-  // Responsive: ajusta el ancho del post según el ancho de pantalla
   const postWidth = width > 600 ? Math.min(500, width * 0.7) : width - 40;
 
   return (
-    <View style={[styles.cardContainer, { width: postWidth, alignSelf: 'center' }]}> 
+    <View style={[styles.cardContainer, { width: postWidth, alignSelf: 'center' }]}>
       <Text style={styles.author}>{author}</Text>
+
       {image && (
         <>
           <TouchableOpacity onPress={() => setModalVisible(true)}>
@@ -57,19 +55,14 @@ export const PostCard: React.FC<PostCardProps> = ({
         <View style={{ flex: 1, flexDirection: 'column' }}>
           <Text style={styles.title}>{title}</Text>
           <Text style={[styles.area, { color: areaColor }]}>{area}</Text>
-          {/* Botón Me gusta se muestra debajo del área en pantallas pequeñas o si no cabe */}
-          <View style={{ flexDirection: width < 400 ? 'column' : 'row', alignItems: width < 400 ? 'flex-start' : 'center' }}>
-            {width < 400 && (
-              <TouchableOpacity onPress={() => setLiked(!liked)} style={{ marginTop: 8 }}>
-                <Text style={styles.likeButton}>{liked ? '❤️ Me gusta' : '🤍 Me gusta'}</Text>
-              </TouchableOpacity>
-            )}
-          </View>
+          {width < 400 && (
+            <View style={{ marginTop: 8 }}>
+              <LikeButton id_post={id} />
+            </View>
+          )}
         </View>
         {width >= 400 && (
-          <TouchableOpacity onPress={() => setLiked(!liked)}>
-            <Text style={styles.likeButton}>{liked ? '❤️ Me gusta' : '🤍 Me gusta'}</Text>
-          </TouchableOpacity>
+          <LikeButton id_post={id} />
         )}
       </View>
 
@@ -99,7 +92,6 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     borderWidth: 1,
     borderColor: '#ccc',
-    // width y alignSelf se definen dinámicamente
   },
   author: {
     fontWeight: 'bold',
@@ -111,9 +103,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: 10,
-  },
-  textSection: {
-    flexDirection: 'column',
   },
   title: {
     fontSize: 16,

@@ -4,10 +4,13 @@ import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { getIdUs } from '../utils/auth';
 import {
-  checkUserReaction,
-  countReacciones,
-  toggleReaccion,
+  getReaccion,
+  getReaccionesCount,
+  crearReaccion,
+  eliminarReaccion,
 } from '../api/reacciones';
+
+
 
 interface LikeButtonProps {
   id_post: number;
@@ -19,30 +22,38 @@ export default function LikeButton({ id_post }: LikeButtonProps) {
   const [idUs, setIdUs] = useState<number | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const id_us = await getIdUs();
-      if (id_us) {
-        setIdUs(id_us);
-        const userLiked = await checkUserReaction(id_post, id_us);
-        setLiked(userLiked);
-      }
+  const fetchReaccionInfo = async () => {
+    const id_us = await getIdUs();
+    if (!id_us) return;
 
-      const count = await countReacciones(id_post);
-      setLikesCount(count);
-    };
+    setIdUs(id_us);
 
-    fetchData();
-  }, []);
+    // Verifica si ya reaccionó
+    const reaccion = await getReaccion(id_us, id_post);
+    setLiked(!!reaccion);
+
+    // Trae el número total de likes
+    const count = await getReaccionesCount(id_post);
+    setLikesCount(count);
+  };
+
+    fetchReaccionInfo();
+  }, [id_post]);
 
   const handlePress = async () => {
     if (!idUs) return;
 
-    const newLiked = !liked;
-    setLiked(newLiked);
-    setLikesCount((prev) => prev + (newLiked ? 1 : -1));
-
-    await toggleReaccion(id_post, idUs);
+    if (liked) {
+      await eliminarReaccion(idUs, id_post);
+      setLiked(false);
+      setLikesCount((prev) => Math.max(prev - 1, 0));
+    } else {
+      await crearReaccion(idUs, id_post);
+      setLiked(true);
+      setLikesCount((prev) => prev + 1);
+    }
   };
+
 
   return (
     <TouchableOpacity onPress={handlePress} style={styles.button}>
