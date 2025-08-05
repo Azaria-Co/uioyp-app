@@ -1,6 +1,5 @@
-// components/LikeButton.tsx
 import React, { useEffect, useState } from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { getIdUs } from '../utils/auth';
 import {
@@ -10,53 +9,79 @@ import {
   eliminarReaccion,
 } from '../api/reacciones';
 
-
-
 interface LikeButtonProps {
   id_post: number;
+  initialCount: number;
 }
 
-export default function LikeButton({ id_post }: LikeButtonProps) {
+export default function LikeButton({ id_post, initialCount }: LikeButtonProps) {
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [idUs, setIdUs] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
-  const fetchReaccionInfo = async () => {
-    const id_us = await getIdUs();
-    if (!id_us) return;
+    const fetchReaccionInfo = async () => {
+      try {
+        const id_us = await getIdUs();
+        if (!id_us) {
+          console.log('No se pudo obtener id_us');
+          setLoading(false);
+          return;
+        }
 
-    setIdUs(id_us);
+        setIdUs(id_us);
 
-    // Verifica si ya reaccionó
-    const reaccion = await getReaccion(id_us, id_post);
-    setLiked(!!reaccion);
+        const reaccion = await getReaccion(id_us, id_post);
+        setLiked(!!reaccion);
 
-    // Trae el número total de likes
-    const count = await getReaccionesCount(id_post);
-    setLikesCount(count);
-  };
+        setLikesCount(initialCount);
+      } catch (error) {
+        console.error('Error al cargar reacciones:', error);
+        // En caso de error, asumimos que no hay like
+        setLiked(false);
+        setLikesCount(initialCount);
+      } finally {
+        setLoading(false);
+      }
+    };
 
     fetchReaccionInfo();
   }, [id_post]);
 
   const handlePress = async () => {
-    if (!idUs) return;
+    if (!idUs || processing) return;
 
-    if (liked) {
-      await eliminarReaccion(idUs, id_post);
-      setLiked(false);
-      setLikesCount((prev) => Math.max(prev - 1, 0));
-    } else {
-      await crearReaccion(idUs, id_post);
-      setLiked(true);
-      setLikesCount((prev) => prev + 1);
+    setProcessing(true);
+
+    try {
+      if (liked) {
+        await eliminarReaccion(idUs, id_post);
+        setLiked(false);
+        setLikesCount((prev) => Math.max(prev - 1, 0));
+      } else {
+        await crearReaccion(idUs, id_post);
+        setLiked(true);
+        setLikesCount((prev) => prev + 1);
+      }
+    } catch (error) {
+      console.error('Error al actualizar reacción:', error);
+    } finally {
+      setProcessing(false);
     }
   };
 
+  if (loading) {
+    return (
+      <TouchableOpacity style={styles.button}>
+        <ActivityIndicator size="small" color="crimson" />
+      </TouchableOpacity>
+    );
+  }
 
   return (
-    <TouchableOpacity onPress={handlePress} style={styles.button}>
+    <TouchableOpacity onPress={handlePress} style={styles.button} disabled={processing}>
       <AntDesign name={liked ? 'heart' : 'hearto'} size={20} color="crimson" />
       <Text style={styles.text}>{likesCount}</Text>
     </TouchableOpacity>
@@ -74,4 +99,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'crimson',
   },
-});
+}); 

@@ -1,3 +1,4 @@
+// components/PostCard.tsx
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, useWindowDimensions } from 'react-native';
 import { PostMedia } from './PostMedia';
@@ -13,6 +14,7 @@ interface PostCardProps {
   description: string;
   date: string;
   image?: any;
+  likes: number;
 }
 
 export const PostCard: React.FC<PostCardProps> = ({
@@ -24,6 +26,7 @@ export const PostCard: React.FC<PostCardProps> = ({
   description,
   date,
   image,
+  likes,
 }) => {
   const { width } = useWindowDimensions();
   const [modalVisible, setModalVisible] = useState(false);
@@ -55,16 +58,13 @@ export const PostCard: React.FC<PostCardProps> = ({
         <View style={{ flex: 1, flexDirection: 'column' }}>
           <Text style={styles.title}>{title}</Text>
           <Text style={[styles.area, { color: areaColor }]}>{area}</Text>
-          {width < 400 && (
-            <View style={{ marginTop: 8 }}>
-              <LikeButton id_post={id} />
-            </View>
-          )}
         </View>
-        {width >= 400 && (
-          <LikeButton id_post={id} />
-        )}
+  
+        <View style={{ marginTop: width < 400 ? 8 : 0 }}>
+          <LikeButton id_post={id} initialCount={likes} />
+        </View>
       </View>
+
 
       <Text style={styles.description}>
         {expanded || !isLong ? description : preview}

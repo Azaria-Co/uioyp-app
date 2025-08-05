@@ -131,8 +131,8 @@ export default function BlogScreen() {
                 area={areaStr}
                 areaColor={areaColors[areaStr] || '#003087'}
                 description={post.texto || post.description || ''}
-                date={post.fecha || post.date || ''}
-              />
+                date={post.fecha || post.date || ''} 
+                likes={post.likes || 0} />
             );
           })
         )}
