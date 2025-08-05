@@ -8,6 +8,8 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/StackNavigator';
 import HeaderUser from '../../components/HeaderUser';
 import LogoutButton from '../../components/LogoutButton';
+import { AntDesign } from '@expo/vector-icons';
+
 
 const ModuleCard = ({
   title,
@@ -137,6 +139,14 @@ export default function BlogScreen() {
           })
         )}
       </ScrollView>
+      {/* Botón de bitácora */}
+      <TouchableOpacity 
+        style={styles.bitacoraButton}
+        onPress={() => navigation.navigate('Bitacora')}
+      >
+        <AntDesign name="book" size={20} color="white" />
+        <Text style={styles.bitacoraButtonText}>Mi Bitácora</Text>
+      </TouchableOpacity>
 
       {/* Botón cerrar sesión */}
       <LogoutButton />
@@ -185,6 +195,30 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
   },
+
+  bitacoraButton: {
+    position: 'absolute',
+    bottom: 80, // Posicionado arriba del LogoutButton
+    alignSelf: 'center',
+    backgroundColor: '#003087',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  bitacoraButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+
   logoutButton: {
     position: 'absolute',
     bottom: 20,

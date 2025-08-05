@@ -5,6 +5,7 @@ import LoginScreen from '../screens/LoginScreen';
 import BlogScreen from '../screens/pacientes/BlogScreen';
 import HomeSpecialist from '../screens/especialistas/HomeSpecialist';
 import AdminScreen from '../screens/admin/AdminScreen';
+import BitacoraScreen from '../screens/pacientes/BitacoraScreen';
 
 
 export type RootStackParamList = {
@@ -13,6 +14,7 @@ export type RootStackParamList = {
   Blog: undefined;
   HomeSpecialist: undefined;
   AdminScreen: undefined;
+  Bitacora: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -25,6 +27,7 @@ export default function StackNavigator() {
       <Stack.Screen name="Blog" component={BlogScreen} />
       <Stack.Screen name="HomeSpecialist" component={HomeSpecialist} />
       <Stack.Screen name="AdminScreen" component={AdminScreen} /> 
+      <Stack.Screen name="Bitacora" component={BitacoraScreen} />
     </Stack.Navigator>
   );
 }
