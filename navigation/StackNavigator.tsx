@@ -6,6 +6,9 @@ import BlogScreen from '../screens/pacientes/BlogScreen';
 import HomeSpecialist from '../screens/especialistas/HomeSpecialist';
 import AdminScreen from '../screens/admin/AdminScreen';
 import BitacoraScreen from '../screens/pacientes/BitacoraScreen';
+import ProgresoScreen from '../screens/pacientes/ProgresoScreen';
+import GestionarProgresoScreen from '../screens/especialistas/GestionarProgresoScreen';
+import GestionarBitacorasScreen from '../screens/especialistas/GestionarBitacorasScreen';
 
 
 export type RootStackParamList = {
@@ -15,6 +18,9 @@ export type RootStackParamList = {
   HomeSpecialist: undefined;
   AdminScreen: undefined;
   Bitacora: undefined;
+  Progreso: undefined;
+  GestionarProgreso: undefined;
+  GestionarBitacoras: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -28,6 +34,9 @@ export default function StackNavigator() {
       <Stack.Screen name="HomeSpecialist" component={HomeSpecialist} />
       <Stack.Screen name="AdminScreen" component={AdminScreen} /> 
       <Stack.Screen name="Bitacora" component={BitacoraScreen} />
+      <Stack.Screen name="Progreso" component={ProgresoScreen} />
+      <Stack.Screen name="GestionarProgreso" component={GestionarProgresoScreen} />
+      <Stack.Screen name="GestionarBitacoras" component={GestionarBitacorasScreen} />
     </Stack.Navigator>
   );
 }

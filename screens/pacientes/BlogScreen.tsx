@@ -148,6 +148,15 @@ export default function BlogScreen() {
         <Text style={styles.bitacoraButtonText}>Mi Bitácora</Text>
       </TouchableOpacity>
 
+      {/* Botón de progreso */}
+      <TouchableOpacity 
+        style={styles.progresoButton}
+        onPress={() => navigation.navigate('Progreso')}
+      >
+        <AntDesign name="star" size={20} color="white" />
+        <Text style={styles.progresoButtonText}>Mi Progreso</Text>
+      </TouchableOpacity>
+
       {/* Botón cerrar sesión */}
       <LogoutButton />
     </View>
@@ -214,6 +223,28 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
   },
   bitacoraButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  progresoButton: {
+    position: 'absolute',
+    bottom: 140, // Posicionado arriba del botón de bitácora
+    alignSelf: 'center',
+    backgroundColor: '#003087',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  progresoButtonText: {
     color: 'white',
     fontWeight: 'bold',
     fontSize: 14,

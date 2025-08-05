@@ -13,14 +13,18 @@ import {
 import { AntDesign } from '@expo/vector-icons';
 import HeaderUser from '../../components/HeaderUser';
 import LogoutButton from '../../components/LogoutButton';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../navigation/StackNavigator';
 import BitacoraCard from '../../components/BitacoraCard';
 import BloodPressureInput from '../../components/forms/BloodPressureInput';
 import GlucoseInput from '../../components/forms/GlucoseInput';
 import { getBitacoras, crearBitacora, eliminarBitacora } from '../../api/bitacoras';
-import { getPacienteByUsuario } from '../../api/pacientes'; // ← Agregar esta línea
+import { getPacienteByUsuario } from '../../api/pacientes';
 import { getIdUs } from '../../utils/auth';
 
 export default function BitacoraScreen() {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { width } = useWindowDimensions();
   const [bitacoras, setBitacoras] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -243,6 +247,14 @@ export default function BitacoraScreen() {
         </View>
       </Modal>
 
+      <TouchableOpacity 
+        style={styles.bitacoraButton}
+        onPress={() => navigation.navigate('Blog')}
+      >
+        <AntDesign name="book" size={20} color="white" />
+        <Text style={styles.bitacoraButtonText}>Blog</Text>
+      </TouchableOpacity>
+
       <LogoutButton />
     </View>
   );
@@ -280,6 +292,29 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+  },
+
+  bitacoraButton: {
+    position: 'absolute',
+    bottom: 80, // Posicionado arriba del LogoutButton
+    alignSelf: 'center',
+    backgroundColor: '#003087',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  bitacoraButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 14,
   },
   patientInfo: {
     backgroundColor: '#f8f9fa',
