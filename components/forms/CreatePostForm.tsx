@@ -1,8 +1,11 @@
 // components/forms/CreatePostForm.tsx
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator, Alert, Image } from 'react-native';
 import { getIdUs, getToken } from '../../utils/auth';
 import { API_URL } from '../../api/config';
+import * as ImagePicker from 'expo-image-picker';
+import { uploadImage } from '../../api/multimedia';
+import { AntDesign } from '@expo/vector-icons';
 
 interface CreatePostFormProps {
   area: string;
@@ -15,6 +18,32 @@ export default function CreatePostForm({ area, id_esp, onPostCreated }: CreatePo
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  const pickImage = async () => {
+    // Pedir permisos
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permisos requeridos', 'Necesitamos permisos para acceder a tu galería');
+      return;
+    }
+
+    // Abrir selector de imagen
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.8,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      setSelectedImage(result.assets[0].uri);
+    }
+  };
+
+  const removeImage = () => {
+    setSelectedImage(null);
+  };
 
   const handleSubmit = async () => {
     if (!title.trim() || !description.trim()) {
@@ -33,6 +62,8 @@ export default function CreatePostForm({ area, id_esp, onPostCreated }: CreatePo
     try {
       const token = await getToken();
       if (!token) throw new Error('No autenticado');
+      
+      // Primero crear el post
       const body = {
         titulo: title,
         texto: description,
@@ -48,9 +79,21 @@ export default function CreatePostForm({ area, id_esp, onPostCreated }: CreatePo
       });
       const data = await res.json();
       if (!res.ok || data.error) throw new Error(data.error || 'Error al crear post');
+      
+      // Si hay una imagen seleccionada, subirla
+      if (selectedImage && data.id) {
+        try {
+          await uploadImage(selectedImage, data.id);
+        } catch (imageError) {
+          console.warn('Error uploading image:', imageError);
+          // No fallar el post si la imagen no se puede subir
+        }
+      }
+      
       Alert.alert('Éxito', 'Post creado correctamente');
       setTitle('');
       setDescription('');
+      setSelectedImage(null);
       if (onPostCreated) onPostCreated();
     } catch (e: any) {
       Alert.alert('Error', e.message || 'No se pudo crear el post');
@@ -78,6 +121,25 @@ export default function CreatePostForm({ area, id_esp, onPostCreated }: CreatePo
         placeholder="Descripción"
         multiline
       />
+      
+      {/* Selector de imagen */}
+      <View style={styles.imageSection}>
+        <Text style={styles.label}>Imagen (opcional)</Text>
+        {selectedImage ? (
+          <View style={styles.imageContainer}>
+            <Image source={{ uri: selectedImage }} style={styles.selectedImage} />
+            <TouchableOpacity style={styles.removeImageButton} onPress={removeImage}>
+              <AntDesign name="close" size={20} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity style={styles.imagePickerButton} onPress={pickImage}>
+            <AntDesign name="camera" size={24} color="#003087" />
+            <Text style={styles.imagePickerText}>Seleccionar imagen</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+      
       <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={loading}>
         {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Publicar</Text>}
       </TouchableOpacity>
@@ -93,4 +155,44 @@ const styles = StyleSheet.create({
   },
   button: { backgroundColor: '#003087', padding: 15, borderRadius: 10, alignItems: 'center', marginTop: 10 },
   buttonText: { color: 'white', fontWeight: 'bold' },
+  imageSection: {
+    marginBottom: 15,
+  },
+  imagePickerButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 15,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#003087',
+    borderStyle: 'dashed',
+    backgroundColor: '#f8f9fa',
+    gap: 10,
+  },
+  imagePickerText: {
+    color: '#003087',
+    fontWeight: '600',
+  },
+  imageContainer: {
+    position: 'relative',
+    alignSelf: 'center',
+  },
+  selectedImage: {
+    width: 200,
+    height: 150,
+    borderRadius: 10,
+    resizeMode: 'cover',
+  },
+  removeImageButton: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    backgroundColor: '#dc3545',
+    borderRadius: 15,
+    width: 30,
+    height: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });

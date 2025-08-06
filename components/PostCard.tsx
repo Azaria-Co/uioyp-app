@@ -4,16 +4,17 @@ import { View, Text, StyleSheet, TouchableOpacity, Modal, useWindowDimensions } 
 import { PostMedia } from './PostMedia';
 import PostMediaModal from './PostMediaModal';
 import LikeButton from './LikeButton';
+import { getImageUrl } from '../api/multimedia';
 
 interface PostCardProps {
-  id: number; // ← Agregamos esto
+  id: number;
   author: string;
   title: string;
   area: string;
   areaColor: string;
   description: string;
   date: string;
-  image?: any;
+  image?: any; // Puede ser un objeto multimedia de la API o null
   likes: number;
 }
 
@@ -39,17 +40,24 @@ export const PostCard: React.FC<PostCardProps> = ({
 
   const postWidth = width > 600 ? Math.min(500, width * 0.7) : width - 40;
 
+  // Construir la fuente de imagen
+  const imageSource = image?.filename 
+    ? { uri: getImageUrl(image.filename) }
+    : image?.uri 
+    ? { uri: image.uri }
+    : image;
+
   return (
     <View style={[styles.cardContainer, { width: postWidth, alignSelf: 'center' }]}>
       <Text style={styles.author}>{author}</Text>
 
-      {image && (
+      {imageSource && (
         <>
           <TouchableOpacity onPress={() => setModalVisible(true)}>
-            <PostMedia source={image} />
+            <PostMedia source={imageSource} />
           </TouchableOpacity>
           <Modal visible={modalVisible} transparent animationType="fade">
-            <PostMediaModal source={image} onClose={() => setModalVisible(false)} />
+            <PostMediaModal source={imageSource} onClose={() => setModalVisible(false)} />
           </Modal>
         </>
       )}

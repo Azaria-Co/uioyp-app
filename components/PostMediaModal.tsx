@@ -27,10 +27,10 @@ const PostMediaModal: React.FC<Props> = ({ source, onClose }) => {
 
   const pinchHandler = useAnimatedGestureHandler<PinchGestureHandlerGestureEvent>({
     onActive: (event) => {
-      scale.value = event.scale;
+      scale.value = Math.max(0.5, Math.min(event.scale, 4)); // Zoom entre 0.5x y 4x
     },
     onEnd: () => {
-      scale.value = withTiming(1);
+      scale.value = withTiming(1, { duration: 300 });
     },
   });
 
@@ -58,13 +58,13 @@ export default PostMediaModal;
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: '#000000cc',
+    backgroundColor: '#000000ee',
     justifyContent: 'center',
     alignItems: 'center',
   },
   image: {
-    width: width * 0.9,
-    height: height * 0.6,
-    borderRadius: 10,
+    width: width * 0.95,
+    height: height * 0.8,
+    borderRadius: 15,
   },
 });

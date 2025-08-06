@@ -1,6 +1,6 @@
 // components/PostMedia.tsx
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, Dimensions } from 'react-native';
 import { PinchGestureHandler, PinchGestureHandlerGestureEvent } from 'react-native-gesture-handler';
 import Animated, {
   useAnimatedGestureHandler,
@@ -9,19 +9,22 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
+const { width: screenWidth } = Dimensions.get('window');
+
 interface PostMediaProps {
   source: any;
 }
 
 export const PostMedia: React.FC<PostMediaProps> = ({ source }) => {
   const scale = useSharedValue(1);
+  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
 
   const pinchHandler = useAnimatedGestureHandler<PinchGestureHandlerGestureEvent>({
     onActive: (event) => {
-      scale.value = event.scale;
+      scale.value = Math.max(1, Math.min(event.scale, 3)); // Limitar zoom entre 1x y 3x
     },
     onEnd: () => {
-      scale.value = withTiming(1);
+      scale.value = withTiming(1, { duration: 300 });
     },
   });
 
@@ -29,10 +32,48 @@ export const PostMedia: React.FC<PostMediaProps> = ({ source }) => {
     transform: [{ scale: scale.value }],
   }));
 
+  // Calcular dimensiones responsivas
+  const calculateImageDimensions = (imageWidth: number, imageHeight: number) => {
+    const maxWidth = screenWidth - 40; // Margen de 20px a cada lado
+    const maxHeight = 400; // Altura máxima razonable
+    
+    // Calcular ratio de aspecto
+    const aspectRatio = imageWidth / imageHeight;
+    
+    let finalWidth = maxWidth;
+    let finalHeight = finalWidth / aspectRatio;
+    
+    // Si la altura es muy grande, ajustar por altura
+    if (finalHeight > maxHeight) {
+      finalHeight = maxHeight;
+      finalWidth = finalHeight * aspectRatio;
+    }
+    
+    return { width: finalWidth, height: finalHeight };
+  };
+
+  const handleImageLoad = (event: any) => {
+    const { width, height } = event.nativeEvent.source;
+    const dimensions = calculateImageDimensions(width, height);
+    setImageSize(dimensions);
+  };
+
   return (
     <View style={styles.mediaContainer}>
       <PinchGestureHandler onGestureEvent={pinchHandler}>
-        <Animated.Image source={source} style={[styles.image, animatedStyle]} resizeMode="contain" />
+        <Animated.Image 
+          source={source} 
+          style={[
+            styles.image, 
+            animatedStyle,
+            imageSize.width > 0 ? {
+              width: imageSize.width,
+              height: imageSize.height,
+            } : styles.defaultImageSize
+          ]} 
+          resizeMode="cover"
+          onLoad={handleImageLoad}
+        />
       </PinchGestureHandler>
     </View>
   );
@@ -40,15 +81,18 @@ export const PostMedia: React.FC<PostMediaProps> = ({ source }) => {
 
 const styles = StyleSheet.create({
   mediaContainer: {
-    maxHeight: 300,
     width: '100%',
     marginVertical: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 12,
     overflow: 'hidden',
-    borderRadius: 10,
   },
   image: {
-    width: '100%',
-    height: 300,
-    borderRadius: 10,
+    borderRadius: 12,
+  },
+  defaultImageSize: {
+    width: screenWidth - 40,
+    height: 250,
   },
 });
