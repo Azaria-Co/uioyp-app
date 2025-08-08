@@ -4,12 +4,16 @@ import { getToken } from '../utils/auth';
 
 export interface MultimediaFile {
   id: number;
-  filename: string;
-  original_name: string;
-  file_path: string;
-  file_size: number;
-  mime_type: string;
-  id_post: number | null;
+  tipo: string;
+  filename?: string;
+  original_name?: string;
+  file_path?: string;
+  file_size?: number;
+  mime_type?: string;
+  url?: string;
+  titulo?: string;
+  descripcion?: string;
+  id_post: number;
 }
 
 export async function uploadImage(imageUri: string, idPost?: number): Promise<MultimediaFile> {
@@ -18,43 +22,63 @@ export async function uploadImage(imageUri: string, idPost?: number): Promise<Mu
 
   const formData = new FormData();
   
-  // Crear el objeto File para React Native
-  const uriParts = imageUri.split('.');
-  const fileType = uriParts[uriParts.length - 1];
+  // Crear el objeto de archivo para React Native
+  const fileExtension = imageUri.split('.').pop() || 'jpg';
+  const fileName = `image_${Date.now()}.${fileExtension}`;
   
   formData.append('file', {
     uri: imageUri,
-    name: `image.${fileType}`,
-    type: `image/${fileType}`,
+    name: fileName,
+    type: `image/${fileExtension}`,
   } as any);
 
   if (idPost) {
     formData.append('id_post', idPost.toString());
   }
 
-  try {
-    const response = await fetch(`${API_URL}/multimedia/upload`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data',
-      },
-      body: formData,
-    });
+  const response = await fetch(`${API_URL}/multimedia/upload`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+    body: formData,
+  });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Error uploading image: ${errorText}`);
-    }
-
-    const result = await response.json();
-    return result.file;
-  } catch (error: any) {
-    if (error.message?.includes('Network request failed') || error.name === 'TypeError') {
-      throw new Error('Sin conexión a internet. Verifica tu conexión y vuelve a intentar.');
-    }
-    throw error;
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Error al subir imagen');
   }
+
+  const data = await response.json();
+  return data.file;
+}
+
+export async function createAdvancedMultimedia(multimediaData: {
+  tipo: 'video' | 'link';
+  id_post: number;
+  url: string;
+  titulo?: string;
+  descripcion?: string;
+}): Promise<MultimediaFile> {
+  const token = await getToken();
+  if (!token) throw new Error('No autenticado');
+
+  const response = await fetch(`${API_URL}/multimedia/advanced`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify(multimediaData),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Error al crear multimedia');
+  }
+
+  const data = await response.json();
+  return data.multimedia;
 }
 
 export async function getPostMedia(postId: number): Promise<MultimediaFile[]> {
@@ -62,19 +86,23 @@ export async function getPostMedia(postId: number): Promise<MultimediaFile[]> {
     const response = await fetch(`${API_URL}/multimedia/post/${postId}`);
     
     if (!response.ok) {
-      throw new Error('Error fetching post media');
+      throw new Error('Error al obtener multimedia del post');
     }
 
-    return await response.json();
-  } catch (error: any) {
-    if (error.message?.includes('Network request failed') || error.name === 'TypeError') {
-      console.warn(`No hay conexión para obtener multimedia del post ${postId}`);
-      return []; // Retornar array vacío en lugar de fallar
-    }
-    throw error;
+    const data = await response.json();
+    return Array.isArray(data) ? data : [];
+  } catch (error) {
+    console.warn('Error fetching post media:', error);
+    return [];
   }
 }
 
 export function getImageUrl(filename: string): string {
   return `${API_URL}/multimedia/file/${filename}`;
+}
+
+export function extractYouTubeId(url: string): string | null {
+  const regex = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/;
+  const match = url.match(regex);
+  return match ? match[1] : null;
 }

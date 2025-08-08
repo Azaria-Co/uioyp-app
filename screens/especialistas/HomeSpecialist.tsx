@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { getNombreUs, getIdUs } from '../../utils/auth';
 import CreatePostForm from '../../components/forms/CreatePostForm';
 import { getEspecialistaByUserId } from '../../api/especialistas';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import LogoutButton from '../../components/LogoutButton';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -37,38 +37,61 @@ export default function HomeSpecialist() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Bienvenid@, {nombreUs}</Text>
-      
-      <View style={styles.buttonsContainer}>
-        <TouchableOpacity 
-          style={styles.actionButton}
-          onPress={() => navigation.navigate('GestionarProgreso')}
-        >
-          <AntDesign name="star" size={24} color="white" />
-          <Text style={styles.buttonText}>Gestionar Progreso de Pacientes</Text>
-        </TouchableOpacity>
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <Text style={styles.title}>Bienvenid@, {nombreUs}</Text>
         
-        <TouchableOpacity 
-          style={[styles.actionButton, styles.secondActionButton]}
-          onPress={() => navigation.navigate('GestionarBitacoras')}
-        >
-          <AntDesign name="book" size={24} color="white" />
-          <Text style={styles.buttonText}>Gestionar Bitácoras de Pacientes</Text>
-        </TouchableOpacity>
-      </View>
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity 
+            style={styles.actionButton}
+            onPress={() => navigation.navigate('GestionarProgreso')}
+          >
+            <AntDesign name="star" size={24} color="white" />
+            <Text style={styles.buttonText}>Gestionar Progreso de Pacientes</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.actionButton, styles.secondActionButton]}
+            onPress={() => navigation.navigate('GestionarBitacoras')}
+          >
+            <AntDesign name="book" size={24} color="white" />
+            <Text style={styles.buttonText}>Gestionar Bitácoras de Pacientes</Text>
+          </TouchableOpacity>
+          
+          {/* Botón exclusivo para investigadores */}
+          {especialista && especialista.area === 'Investigacion' && (
+            <TouchableOpacity 
+              style={[styles.actionButton, styles.investigacionButton]}
+              onPress={() => navigation.navigate('GestionarInvestigaciones')}
+            >
+              <AntDesign name="search1" size={24} color="white" />
+              <Text style={styles.buttonText}>Gestionar Investigaciones</Text>
+            </TouchableOpacity>
+          )}
+        </View>
 
-      <View style={{ width: '100%', alignItems: 'center', marginTop: 20 }}>
-        {especialista && (
-          <CreatePostForm area={especialista.area} id_esp={especialista.id} />
-        )}
-      </View>
+        <View style={{ width: '100%', alignItems: 'center', marginTop: 20 }}>
+          {especialista && (
+            <CreatePostForm area={especialista.area} id_esp={especialista.id} />
+          )}
+        </View>
+      </ScrollView>
       <LogoutButton />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' },
+  container: { flex: 1, backgroundColor: '#fff' },
+  scrollContent: { 
+    flexGrow: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    paddingVertical: 20,
+    paddingBottom: 120, // Espacio extra para el botón de logout
+  },
   title: { fontSize: 22, fontWeight: 'bold', color: '#003087' },
   subtitle: { fontSize: 16, color: '#555', marginTop: 10 },
   areaText: { fontSize: 16, color: '#003087', marginTop: 10, fontWeight: '600' },
@@ -95,6 +118,9 @@ const styles = StyleSheet.create({
   },
   secondActionButton: {
     backgroundColor: '#28a745',
+  },
+  investigacionButton: {
+    backgroundColor: '#6f42c1',
   },
   buttonText: {
     color: 'white',

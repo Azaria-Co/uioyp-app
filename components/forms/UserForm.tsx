@@ -25,7 +25,7 @@ export default function UserForm({ nombreUs, setNombreUs, rol, setRol }: UserFor
         style={styles.input}
         onValueChange={setRol}
       >
-        <Picker.Item label="Selecciona un rol" value="" />
+        <Picker.Item label="Selecciona un rol" value="" enabled={false} />
         <Picker.Item label="Administrador" value="1" />
         <Picker.Item label="Especialista" value="2" />
         <Picker.Item label="Paciente" value="3" />

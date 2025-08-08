@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, useWindowDimensions } from 'react-native';
 import { PostMedia } from './PostMedia';
 import PostMediaModal from './PostMediaModal';
+import PostMultimedia from './PostMultimedia';
 import LikeButton from './LikeButton';
 import { getImageUrl } from '../api/multimedia';
 
@@ -16,6 +17,7 @@ interface PostCardProps {
   date: string;
   image?: any; // Puede ser un objeto multimedia de la API o null
   likes: number;
+  tipo?: string; // 'normal' | 'investigacion'
 }
 
 export const PostCard: React.FC<PostCardProps> = ({
@@ -28,15 +30,14 @@ export const PostCard: React.FC<PostCardProps> = ({
   date,
   image,
   likes,
+  tipo = 'normal',
 }) => {
   const { width } = useWindowDimensions();
   const [modalVisible, setModalVisible] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
-  const MAX_WORDS = 25;
-  const words = description.split(' ');
-  const isLong = words.length > MAX_WORDS;
-  const preview = words.slice(0, MAX_WORDS).join(' ') + '...';
+  // Mostrar primeras 3 líneas y permitir expandir
+  const isLong = (description || '').split(' ').length > 35 || (description || '').length > 160;
 
   const postWidth = width > 600 ? Math.min(500, width * 0.7) : width - 40;
 
@@ -51,6 +52,10 @@ export const PostCard: React.FC<PostCardProps> = ({
     <View style={[styles.cardContainer, { width: postWidth, alignSelf: 'center' }]}>
       <Text style={styles.author}>{author}</Text>
 
+      {/* Multimedia del post (imágenes, videos, enlaces) */}
+      <PostMultimedia postId={id} width={postWidth} />
+
+      {/* Backward compatibility: mostrar imagen si existe en la prop */}
       {imageSource && (
         <>
           <TouchableOpacity onPress={() => setModalVisible(true)}>
@@ -69,14 +74,14 @@ export const PostCard: React.FC<PostCardProps> = ({
         </View>
   
         <View style={{ marginTop: width < 400 ? 8 : 0 }}>
-          <LikeButton id_post={id} initialCount={likes} />
+          <LikeButton id_post={id} initialCount={likes} tipo={tipo} />
         </View>
       </View>
-
-
-      <Text style={styles.description}>
-        {expanded || !isLong ? description : preview}
-      </Text>
+      {!!description && (
+        <Text style={styles.description} numberOfLines={expanded ? undefined : 3}>
+          {description}
+        </Text>
+      )}
 
       {isLong && (
         <TouchableOpacity onPress={() => setExpanded(!expanded)}>

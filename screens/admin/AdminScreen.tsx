@@ -12,7 +12,6 @@ export default function AdminScreen() {
   const [nombreUs, setNombreUs] = useState('');
   const [rol, setRol] = useState('');
   // Especialista
-  const [estatus, setEstatus] = useState('');
   const [area, setArea] = useState('');
   // Paciente
   const [masaMuscular, setMasaMuscular] = useState('');
@@ -22,7 +21,7 @@ export default function AdminScreen() {
   const [loading, setLoading] = useState(false);
 
   const resetForm = () => {
-    setNombreUs(''); setRol(''); setEstatus(''); setArea(''); setMasaMuscular(''); setTipoSangre(''); setEnferPat(''); setTelefono('');
+    setNombreUs(''); setRol(''); setArea(''); setMasaMuscular(''); setTipoSangre(''); setEnferPat(''); setTelefono('');
   };
 
   const handleSubmit = async () => {
@@ -30,8 +29,8 @@ export default function AdminScreen() {
       Alert.alert('Error', 'Nombre de usuario y rol son obligatorios');
       return;
     }
-    if (rol === '2' && (!estatus.trim() || !area.trim())) {
-      Alert.alert('Error', 'Completa los campos de especialista');
+    if (rol === '2' && !area.trim()) {
+      Alert.alert('Error', 'Selecciona el área del especialista');
       return;
     }
     if (rol === '3' && (!masaMuscular.trim() || !tipoSangre.trim() || !enferPat.trim() || !telefono.trim())) {
@@ -41,7 +40,7 @@ export default function AdminScreen() {
     setLoading(true);
     try {
       const body: any = { nombre_us: nombreUs, rol: Number(rol) };
-      if (rol === '2') body.especialista = { estatus, area };
+      if (rol === '2') body.especialista = { estatus: 1, area }; // Estatus siempre 1
       if (rol === '3') body.paciente = { masa_muscular: masaMuscular, tipo_sangre: tipoSangre, enfer_pat: enferPat, telefono };
       const res = await fetch(`${API_URL}/usuarios`, {
         method: 'POST',
@@ -66,7 +65,7 @@ export default function AdminScreen() {
         <UserForm nombreUs={nombreUs} setNombreUs={setNombreUs} rol={rol} setRol={setRol} />
         {/* O usar <RolePicker rol={rol} setRol={setRol} /> */}
         {rol === '2' && (
-          <SpecialistForm estatus={estatus} setEstatus={setEstatus} area={area} setArea={setArea} />
+          <SpecialistForm area={area} setArea={setArea} />
         )}
         {rol === '3' && (
           <PatientForm

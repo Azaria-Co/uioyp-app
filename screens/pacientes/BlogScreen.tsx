@@ -57,18 +57,63 @@ export default function BlogScreen() {
     { title: 'Órtesis y Prótesis', color: '#E5C44A', icon: require('../../assets/icons/orthotics.png') },
     { title: 'Nutrición', color: '#E89CC5', icon: require('../../assets/icons/nutrition.png') },
     { title: 'Fisioterapia', color: '#83D0A0', icon: require('../../assets/icons/physio.png') },
+    { title: 'Investigación', color: '#6f42c1', icon: require('../../assets/icons/admin.png') },
     { title: 'General', color: '#9D9D9D', icon: require('../../assets/icons/admin.png') },
   ];
-  const [posts, setPosts] = useState<any[]>([]);
+  const [allPosts, setAllPosts] = useState<any[]>([]); // Todos los posts
+  const [posts, setPosts] = useState<any[]>([]); // Posts filtrados para mostrar
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
     getPosts()
-      .then((data) => setPosts(Array.isArray(data) ? data : []))
-      .catch(() => setPosts([]))
+      .then((data) => {
+        const postsData = Array.isArray(data) ? data : [];
+        // Ordenar de más nuevo a más viejo por fecha
+        const sortDesc = (arr: any[]) =>
+          [...arr].sort((a, b) => {
+            const aDate = new Date(a.fecha || a.date || 0).getTime();
+            const bDate = new Date(b.fecha || b.date || 0).getTime();
+            return bDate - aDate;
+          });
+        const sorted = sortDesc(postsData);
+        setAllPosts(sorted);
+        setPosts(sorted); // Inicialmente mostrar todos
+      })
+      .catch(() => {
+        setAllPosts([]);
+        setPosts([]);
+      })
       .finally(() => setLoading(false));
   }, []);
+
+  // Filtrar posts cuando cambie la selección
+  useEffect(() => {
+    if (!selected || selected === '') {
+      // Si no hay filtro seleccionado, mostrar todos
+      setPosts(allPosts);
+    } else {
+      // Filtrar por área seleccionada
+      const filtered = allPosts.filter(post => {
+        const areaStr = String(post.area || (post.especialista && post.especialista.area) || '');
+        
+        // Manejar casos especiales de nombres
+        if (selected === 'Órtesis y Prótesis' && areaStr === 'Ortesis y Protesis') return true;
+        if (selected === 'Neuropsicología' && areaStr === 'Neuropsicologia') return true;
+        if (selected === 'Nutrición' && areaStr === 'Nutricion') return true;
+        if (selected === 'Investigación' && areaStr === 'Investigacion') return true;
+        
+        return areaStr === selected;
+      });
+      // Ordenar los filtrados de más nuevo a más viejo
+      const sorted = [...filtered].sort((a, b) => {
+        const aDate = new Date(a.fecha || a.date || 0).getTime();
+        const bDate = new Date(b.fecha || b.date || 0).getTime();
+        return bDate - aDate;
+      });
+      setPosts(sorted);
+    }
+  }, [selected, allPosts]);
 
   // Responsive: calcula el ancho de las tarjetas según el ancho de pantalla
   const cardWidth = width > 600 ? (width - 60) / 6 : (width - 50) / 3;
@@ -88,7 +133,7 @@ export default function BlogScreen() {
               color={f.color}
               icon={f.icon}
               selected={selected === f.title}
-              onPress={() => setSelected(f.title)}
+              onPress={() => setSelected(selected === f.title ? '' : f.title)}
               cardWidth={cardWidth}
             />
           ))}
@@ -101,17 +146,31 @@ export default function BlogScreen() {
               color={f.color}
               icon={f.icon}
               selected={selected === f.title}
-              onPress={() => setSelected(f.title)}
+              onPress={() => setSelected(selected === f.title ? '' : f.title)}
               cardWidth={cardWidth}
             />
           ))}
         </View>
 
+        {/* Indicador de filtros activos */}
+        {selected && (
+          <View style={styles.filterIndicator}>
+            <Text style={styles.filterIndicatorText}>
+              📌 Mostrando: {selected} ({posts.length} publicaciones)
+            </Text>
+            <TouchableOpacity onPress={() => setSelected('')} style={styles.clearFilterButton}>
+              <Text style={styles.clearFilterText}>Mostrar todas</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
         {/* Publicaciones tipo Instagram */}
         {loading ? (
           <Text style={{ textAlign: 'center', marginTop: 30 }}>Cargando publicaciones...</Text>
         ) : posts.length === 0 ? (
-          <Text style={{ textAlign: 'center', marginTop: 30 }}>No hay publicaciones.</Text>
+          <Text style={{ textAlign: 'center', marginTop: 30 }}>
+            {selected ? `No hay publicaciones de ${selected}.` : 'No hay publicaciones.'}
+          </Text>
         ) : (
           posts.map((post, index) => {
             const areaColors: Record<string, string> = {
@@ -120,6 +179,7 @@ export default function BlogScreen() {
               'Neuropsicologia': '#3D4D9D',
               'Medicina General': '#BFA47A',
               'Nutricion': '#E89CC5',
+              'Investigacion': '#6f42c1',
               'General': '#9D9D9D',
             };
             const areaStr = String(post.area || (post.especialista && post.especialista.area) || '');
@@ -135,7 +195,8 @@ export default function BlogScreen() {
                 description={post.texto || post.description || ''}
                 date={post.fecha || post.date || ''} 
                 image={post.image}
-                likes={post.likes || 0} />
+                likes={post.likes || 0}
+                tipo={post.tipo || 'normal'} />
             );
           })
         )}
@@ -263,5 +324,32 @@ const styles = StyleSheet.create({
   logoutText: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  filterIndicator: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#f0f8ff',
+    margin: 15,
+    padding: 12,
+    borderRadius: 8,
+    borderLeftWidth: 4,
+    borderLeftColor: '#003087',
+  },
+  filterIndicatorText: {
+    fontSize: 14,
+    color: '#003087',
+    fontWeight: '600',
+  },
+  clearFilterButton: {
+    backgroundColor: '#003087',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 15,
+  },
+  clearFilterText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '600',
   },
 });

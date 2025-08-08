@@ -9,6 +9,7 @@ import BitacoraScreen from '../screens/pacientes/BitacoraScreen';
 import ProgresoScreen from '../screens/pacientes/ProgresoScreen';
 import GestionarProgresoScreen from '../screens/especialistas/GestionarProgresoScreen';
 import GestionarBitacorasScreen from '../screens/especialistas/GestionarBitacorasScreen';
+import GestionarInvestigacionesScreen from '../screens/especialistas/GestionarInvestigacionesScreen';
 
 
 export type RootStackParamList = {
@@ -21,6 +22,7 @@ export type RootStackParamList = {
   Progreso: undefined;
   GestionarProgreso: undefined;
   GestionarBitacoras: undefined;
+  GestionarInvestigaciones: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -37,6 +39,7 @@ export default function StackNavigator() {
       <Stack.Screen name="Progreso" component={ProgresoScreen} />
       <Stack.Screen name="GestionarProgreso" component={GestionarProgresoScreen} />
       <Stack.Screen name="GestionarBitacoras" component={GestionarBitacorasScreen} />
+      <Stack.Screen name="GestionarInvestigaciones" component={GestionarInvestigacionesScreen} />
     </Stack.Navigator>
   );
 }

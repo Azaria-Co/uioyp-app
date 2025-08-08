@@ -12,9 +12,10 @@ import {
 interface LikeButtonProps {
   id_post: number;
   initialCount: number;
+  tipo?: string; // 'normal' | 'investigacion'
 }
 
-export default function LikeButton({ id_post, initialCount }: LikeButtonProps) {
+export default function LikeButton({ id_post, initialCount, tipo = 'normal' }: LikeButtonProps) {
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [idUs, setIdUs] = useState<number | null>(null);
@@ -80,10 +81,20 @@ export default function LikeButton({ id_post, initialCount }: LikeButtonProps) {
     );
   }
 
+  // Configurar texto e ícono según el tipo
+  const isInvestigacion = tipo === 'investigacion';
+  const buttonText = isInvestigacion ? 'Quiero participar' : 'Me gusta';
+  const iconName = isInvestigacion 
+    ? (liked ? 'star' : 'staro') 
+    : (liked ? 'heart' : 'hearto');
+  const iconColor = isInvestigacion ? '#003087' : 'crimson';
+
   return (
     <TouchableOpacity onPress={handlePress} style={styles.button} disabled={processing}>
-      <AntDesign name={liked ? 'heart' : 'hearto'} size={20} color="crimson" />
-      <Text style={styles.text}>{likesCount}</Text>
+      <AntDesign name={iconName} size={20} color={iconColor} />
+      <Text style={[styles.text, { color: iconColor }]}>
+        {likesCount} {liked ? (isInvestigacion ? 'Participando' : 'Me gusta') : buttonText}
+      </Text>
     </TouchableOpacity>
   );
 }

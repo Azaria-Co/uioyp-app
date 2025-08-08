@@ -8,16 +8,20 @@ export async function getPosts() {
     if (!res.ok) throw new Error('No se pudieron obtener los posts');
     const posts = await res.json();
     
-    // Para cada post, obtener sus imágenes
+    // Para cada post, obtener su multimedia
     const postsWithMedia = await Promise.all(
       posts.map(async (post: any) => {
         try {
           const media = await getPostMedia(post.id);
+          // Elegir solo la primera imagen (si existe) para compatibilidad visual
+          const firstImage = Array.isArray(media)
+            ? media.find((m: any) => m?.tipo === 'image' && m?.filename)
+            : null;
           return {
             ...post,
             multimedia: media,
-            // Para compatibilidad con PostCard, usar la primera imagen
-            image: media.length > 0 ? media[0] : null
+            // Solo establecer image cuando realmente hay imagen
+            image: firstImage ? firstImage : null,
           };
         } catch (error) {
           console.warn(`Error fetching media for post ${post.id}:`, error);
