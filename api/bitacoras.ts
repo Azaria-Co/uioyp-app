@@ -17,10 +17,8 @@ export async function getBitacora(id: number) {
   return await res.json();
 }
 
-export async function crearBitacora(fecha: string, presion_ar: string, glucosa: number, id_pac: number) {
+export async function crearBitacora(fecha: string, presion_ar: string, glucosa: number, id_pac: number, comidas?: string, medicamentos?: string) {
   try {
-    
-    
     const res = await fetch(`${API_URL}/bitacoras`, {
       method: 'POST',
       headers: {
@@ -29,12 +27,12 @@ export async function crearBitacora(fecha: string, presion_ar: string, glucosa: 
       body: JSON.stringify({ 
         fecha, 
         presion_ar, 
-        glucosa: parseFloat(glucosa.toString()), // Asegurar que sea número
-        id_pac 
+        glucosa: parseFloat(glucosa.toString()),
+        id_pac,
+        comidas,
+        medicamentos
       }),
     });
-
-    
 
     if (!res.ok) {
       const errorText = await res.text();
@@ -42,11 +40,9 @@ export async function crearBitacora(fecha: string, presion_ar: string, glucosa: 
       throw new Error(`No se pudo crear la bitácora: ${res.status} ${res.statusText}`);
     }
 
-    // Si la respuesta es exitosa (201 Created) pero vacía, considerarla válida
     if (res.status === 201) {
       const contentType = res.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
-        // Respuesta vacía pero exitosa
         return { created: true, status: 'success' };
       }
     }
@@ -60,12 +56,11 @@ export async function crearBitacora(fecha: string, presion_ar: string, glucosa: 
     const data = await res.json();
     console.log('Bitácora creada exitosamente:', data);
     
-    // Manejar la nueva estructura de respuesta
     if (data.success && data.data) {
-      return data.data; // Retornar solo los datos de la bitácora
+      return data.data;
     }
     
-    return data; // Retornar la respuesta completa si no tiene la estructura esperada
+    return data;
   } catch (error) {
     console.error('Error completo:', error);
     throw error;

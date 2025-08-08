@@ -8,7 +8,8 @@ import {
   TouchableOpacity, 
   Modal,
   Alert,
-  useWindowDimensions 
+  useWindowDimensions,
+  TextInput 
 } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import HeaderUser from '../../components/HeaderUser';
@@ -34,6 +35,8 @@ export default function BitacoraScreen() {
   const [submitting, setSubmitting] = useState(false);
   const [idPac, setIdPac] = useState<number | null>(null);
   const [pacienteInfo, setPacienteInfo] = useState<any>(null);
+  const [comidas, setComidas] = useState('');
+  const [medicamentos, setMedicamentos] = useState('');
 
   useEffect(() => {
     loadPatientId();
@@ -101,11 +104,13 @@ export default function BitacoraScreen() {
       setSubmitting(true);
       const fecha = new Date().toISOString();
       console.log('Creando bitácora para paciente:', idPac);
-      await crearBitacora(fecha, presionAr, glucosaNum, idPac);
+      await crearBitacora(fecha, presionAr, glucosaNum, idPac, comidas, medicamentos);
       
       // Limpiar formulario
       setPresionAr('');
       setGlucosa('');
+      setComidas('');
+      setMedicamentos('');
       setModalVisible(false);
       
       // Recargar bitácoras
@@ -208,6 +213,8 @@ export default function BitacoraScreen() {
               fecha={bitacora.fecha}
               presion_ar={bitacora.presion_ar}
               glucosa={bitacora.glucosa}
+              comidas={bitacora.comidas}
+              medicamentos={bitacora.medicamentos}
               paciente={bitacora.paciente}
               onDelete={handleDelete}
             />
@@ -233,6 +240,22 @@ export default function BitacoraScreen() {
 
             <BloodPressureInput presionAr={presionAr} setPresionAr={setPresionAr} />
             <GlucoseInput glucosa={glucosa} setGlucosa={setGlucosa} />
+            <Text style={{marginTop: 10, fontWeight: 'bold'}}>Comidas consumidas</Text>
+            <TextInput
+              style={{borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 8, marginBottom: 10}}
+              placeholder="Ejemplo: Desayuno, almuerzo, cena..."
+              value={comidas}
+              onChangeText={setComidas}
+              multiline
+            />
+            <Text style={{marginTop: 10, fontWeight: 'bold'}}>Medicamentos consumidos</Text>
+            <TextInput
+              style={{borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 8, marginBottom: 10}}
+              placeholder="Ejemplo: Paracetamol, insulina..."
+              value={medicamentos}
+              onChangeText={setMedicamentos}
+              multiline
+            />
 
             <TouchableOpacity
               style={[styles.submitButton, submitting && styles.submitButtonDisabled]}

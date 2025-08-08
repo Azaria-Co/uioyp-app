@@ -8,6 +8,8 @@ interface BitacoraCardProps {
   fecha: string;
   presion_ar: string;
   glucosa: number;
+  comidas?: string;
+  medicamentos?: string;
   paciente?: {
     nombre_us: string;
   };
@@ -19,6 +21,8 @@ export default function BitacoraCard({
   fecha, 
   presion_ar, 
   glucosa, 
+  comidas,
+  medicamentos,
   paciente,
   onDelete 
 }: BitacoraCardProps) {
@@ -55,6 +59,18 @@ export default function BitacoraCard({
           <Text style={styles.value}>{glucosa} mg/dL</Text>
         </View>
       </View>
+      {comidas ? (
+        <View style={{marginTop: 8}}>
+          <Text style={styles.label}>Comidas consumidas</Text>
+          <Text style={styles.value}>{comidas}</Text>
+        </View>
+      ) : null}
+      {medicamentos ? (
+        <View style={{marginTop: 8}}>
+          <Text style={styles.label}>Medicamentos consumidos</Text>
+          <Text style={styles.value}>{medicamentos}</Text>
+        </View>
+      ) : null}
       
       {paciente && (
         <Text style={styles.patientName}>Paciente: {paciente.nombre_us}</Text>

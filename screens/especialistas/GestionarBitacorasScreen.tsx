@@ -212,6 +212,8 @@ export default function GestionarBitacorasScreen() {
                     fecha={bitacora.fecha}
                     presion_ar={bitacora.presion_ar}
                     glucosa={bitacora.glucosa}
+                    comidas={bitacora.comidas}
+                    medicamentos={bitacora.medicamentos}
                     paciente={bitacora.paciente}
                     onDelete={handleDelete}
                   />
