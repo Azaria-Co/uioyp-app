@@ -42,3 +42,15 @@ export async function getPosts() {
     throw error;
   }
 }
+
+export async function getTopLikedPosts() {
+  const res = await fetch(`${API_URL}/posts/stats/top-liked`);
+  if (!res.ok) throw new Error('No se pudieron obtener los posts más likeados');
+  return res.json();
+}
+
+export async function getTopLikedPostsByEspecialista(id_esp: number) {
+  const res = await fetch(`${API_URL}/posts/stats/top-liked/${id_esp}`);
+  if (!res.ok) throw new Error('No se pudieron obtener los posts más likeados del especialista');
+  return res.json();
+}

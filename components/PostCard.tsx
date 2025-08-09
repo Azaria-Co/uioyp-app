@@ -41,25 +41,38 @@ export const PostCard: React.FC<PostCardProps> = ({
 
   const postWidth = width > 600 ? Math.min(500, width * 0.7) : width - 40;
 
-  // Construir la fuente de imagen
+  // Construir la fuente de imagen (BACK-compat) — mostraremos solo si no hay multimedia cargada
   const imageSource = image?.filename 
     ? { uri: getImageUrl(image.filename) }
     : image?.uri 
     ? { uri: image.uri }
-    : image;
+    : undefined;
+  const [hasServerMedia, setHasServerMedia] = useState<boolean>(false);
+
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return String(dateStr);
+    // Solo la fecha, sin hora, en español
+    try {
+      return d.toLocaleDateString('es-MX', { year: 'numeric', month: '2-digit', day: '2-digit' });
+    } catch {
+      return d.toISOString().slice(0, 10);
+    }
+  };
 
   return (
     <View style={[styles.cardContainer, { width: postWidth, alignSelf: 'center' }]}>
       <Text style={styles.author}>{author}</Text>
 
       {/* Multimedia del post (imágenes, videos, enlaces) */}
-      <PostMultimedia postId={id} width={postWidth} />
+      <PostMultimedia postId={id} width={postWidth} onHasMedia={setHasServerMedia} />
 
-      {/* Backward compatibility: mostrar imagen si existe en la prop */}
-      {imageSource && (
+      {/* Backward compatibility: si no viene multimedia desde servidor y sí hay imagen directa */}
+      {!imageSource || hasServerMedia ? null : (
         <>
           <TouchableOpacity onPress={() => setModalVisible(true)}>
-            <PostMedia source={imageSource} />
+            <PostMedia source={imageSource} maxWidth={postWidth} />
           </TouchableOpacity>
           <Modal visible={modalVisible} transparent animationType="fade">
             <PostMediaModal source={imageSource} onClose={() => setModalVisible(false)} />
@@ -91,7 +104,7 @@ export const PostCard: React.FC<PostCardProps> = ({
         </TouchableOpacity>
       )}
 
-      <Text style={styles.date}>{date}</Text>
+      <Text style={styles.date}>{formatDate(date)}</Text>
     </View>
   );
 };

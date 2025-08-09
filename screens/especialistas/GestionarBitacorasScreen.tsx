@@ -10,6 +10,7 @@ import {
   Alert,
   useWindowDimensions 
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -49,6 +50,7 @@ const PacienteCard = ({ paciente, onViewBitacoras }: PacienteCardProps) => {
 export default function GestionarBitacorasScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { width } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
   const [pacientes, setPacientes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
@@ -152,11 +154,11 @@ export default function GestionarBitacorasScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
         <Text style={styles.title}>Gestionar Bitácoras de Pacientes</Text>
       </View>
 
-      <ScrollView contentContainerStyle={styles.body}>
+      <ScrollView contentContainerStyle={[styles.body, { paddingBottom: 16 + insets.bottom }]}>
         {especialista && (
           <View style={styles.especialistaInfo}>
             <Text style={styles.especialistaNombre}>{especialista.nombre_us}</Text>

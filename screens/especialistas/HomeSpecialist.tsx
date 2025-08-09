@@ -77,6 +77,17 @@ export default function HomeSpecialist() {
             <CreatePostForm area={especialista.area} id_esp={especialista.id} />
           )}
         </View>
+
+        {/* Botón para ver gráficas de posts más likeados */}
+        <View style={{ width: '100%', paddingHorizontal: 20, marginTop: 10 }}>
+          <TouchableOpacity 
+            style={[styles.actionButton, { backgroundColor: '#ff7f50' }]}
+            onPress={() => navigation.navigate('PostsAnalytics')}
+          >
+            <AntDesign name="areachart" size={24} color="white" />
+            <Text style={styles.buttonText}>Ver estadísticas de posts</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
       <LogoutButton />
     </View>

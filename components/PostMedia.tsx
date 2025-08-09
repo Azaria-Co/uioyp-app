@@ -13,9 +13,10 @@ const { width: screenWidth } = Dimensions.get('window');
 
 interface PostMediaProps {
   source: any;
+  maxWidth?: number;
 }
 
-export const PostMedia: React.FC<PostMediaProps> = ({ source }) => {
+export const PostMedia: React.FC<PostMediaProps> = ({ source, maxWidth }) => {
   const scale = useSharedValue(1);
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
 
@@ -34,13 +35,13 @@ export const PostMedia: React.FC<PostMediaProps> = ({ source }) => {
 
   // Calcular dimensiones responsivas
   const calculateImageDimensions = (imageWidth: number, imageHeight: number) => {
-    const maxWidth = screenWidth - 40; // Margen de 20px a cada lado
+    const targetMaxWidth = typeof maxWidth === 'number' ? maxWidth : Math.min(screenWidth - 40, 500);
     const maxHeight = 400; // Altura máxima razonable
     
     // Calcular ratio de aspecto
     const aspectRatio = imageWidth / imageHeight;
     
-    let finalWidth = maxWidth;
+    let finalWidth = targetMaxWidth;
     let finalHeight = finalWidth / aspectRatio;
     
     // Si la altura es muy grande, ajustar por altura
@@ -69,9 +70,11 @@ export const PostMedia: React.FC<PostMediaProps> = ({ source }) => {
             imageSize.width > 0 ? {
               width: imageSize.width,
               height: imageSize.height,
-            } : styles.defaultImageSize
+            } : (typeof maxWidth === 'number' 
+              ? { width: maxWidth, height: Math.min(300, (maxWidth * 3) / 4) }
+              : styles.defaultImageSize)
           ]} 
-          resizeMode="cover"
+          resizeMode="contain"
           onLoad={handleImageLoad}
         />
       </PinchGestureHandler>
@@ -92,7 +95,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   defaultImageSize: {
-    width: screenWidth - 40,
+    width: Math.min(screenWidth - 40, 500),
     height: 250,
   },
 });

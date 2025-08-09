@@ -14,6 +14,7 @@ import {
 import { AntDesign } from '@expo/vector-icons';
 import HeaderUser from '../../components/HeaderUser';
 import LogoutButton from '../../components/LogoutButton';
+import PatientBottomNav, { NAV_HEIGHT } from '../../components/PatientBottomNav';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/StackNavigator';
@@ -177,7 +178,7 @@ export default function BitacoraScreen() {
     <View style={styles.container}>
       <HeaderUser currentStage={2} />
 
-      <ScrollView contentContainerStyle={styles.body}>
+      <ScrollView contentContainerStyle={[styles.body, { paddingBottom: 30 + NAV_HEIGHT }]}>
         <View style={styles.header}>
           <Text style={styles.title}>Mi Bitácora</Text>
           <TouchableOpacity 
@@ -270,15 +271,7 @@ export default function BitacoraScreen() {
         </View>
       </Modal>
 
-      <TouchableOpacity 
-        style={styles.bitacoraButton}
-        onPress={() => navigation.navigate('Blog')}
-      >
-        <AntDesign name="book" size={20} color="white" />
-        <Text style={styles.bitacoraButtonText}>Blog</Text>
-      </TouchableOpacity>
-
-      <LogoutButton />
+      <PatientBottomNav />
     </View>
   );
 }

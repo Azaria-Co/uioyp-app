@@ -11,6 +11,7 @@ import {
 import { AntDesign } from '@expo/vector-icons';
 import HeaderUser from '../../components/HeaderUser';
 import LogoutButton from '../../components/LogoutButton';
+import PatientBottomNav, { NAV_HEIGHT } from '../../components/PatientBottomNav';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/StackNavigator';
@@ -107,7 +108,7 @@ export default function ProgresoScreen() {
     <View style={styles.container}>
       <HeaderUser currentStage={3} />
 
-      <ScrollView contentContainerStyle={styles.body}>
+      <ScrollView contentContainerStyle={[styles.body, { paddingBottom: 90 + NAV_HEIGHT }]}>
         <View style={styles.header}>
           <Text style={styles.title}>Mi Progreso</Text>
         </View>
@@ -148,15 +149,12 @@ export default function ProgresoScreen() {
 
 
 
-      <TouchableOpacity 
-        style={styles.blogButton}
-        onPress={() => navigation.navigate('Blog')}
-      >
-        <AntDesign name="book" size={20} color="white" />
-        <Text style={styles.blogButtonText}>Blog</Text>
-      </TouchableOpacity>
+      {/* Logout cerca del menú inferior, pero sin sobreponerse */}
+      <View style={{ position: 'absolute', bottom: NAV_HEIGHT + 16, left: 0, right: 0 }}>
+        <LogoutButton inline />
+      </View>
 
-      <LogoutButton />
+      <PatientBottomNav />
     </View>
   );
 }
@@ -182,28 +180,6 @@ const styles = StyleSheet.create({
     color: '#003087',
   },
 
-  blogButton: {
-    position: 'absolute',
-    bottom: 80,
-    alignSelf: 'center',
-    backgroundColor: '#003087',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  blogButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 14,
-  },
   patientInfo: {
     backgroundColor: '#f8f9fa',
     padding: 15,

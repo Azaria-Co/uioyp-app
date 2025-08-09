@@ -46,7 +46,7 @@ export default function YouTubeVideo({
   }
 
   return (
-    <View style={[styles.container, { width }]}>
+    <View style={[styles.container, { width, alignSelf: 'center' }] }>
       {titulo && <Text style={styles.titulo}>{titulo}</Text>}
       
       <View style={styles.videoContainer}>

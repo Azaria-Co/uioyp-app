@@ -8,6 +8,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/StackNavigator';
 import HeaderUser from '../../components/HeaderUser';
 import LogoutButton from '../../components/LogoutButton';
+import PatientBottomNav, { NAV_HEIGHT } from '../../components/PatientBottomNav';
 import { AntDesign } from '@expo/vector-icons';
 
 
@@ -124,22 +125,9 @@ export default function BlogScreen() {
       <HeaderUser currentStage={1} />
 
       {/* Cuerpo del blog */}
-      <ScrollView contentContainerStyle={styles.body}>
-        <View style={styles.row}>
-          {filters.slice(0, 3).map((f) => (
-            <ModuleCard
-              key={f.title}
-              title={f.title}
-              color={f.color}
-              icon={f.icon}
-              selected={selected === f.title}
-              onPress={() => setSelected(selected === f.title ? '' : f.title)}
-              cardWidth={cardWidth}
-            />
-          ))}
-        </View>
-        <View style={styles.row}>
-          {filters.slice(3).map((f) => (
+      <ScrollView contentContainerStyle={[styles.body, { paddingBottom: 30 + NAV_HEIGHT }]}>
+        <View style={styles.filtersContainer}>
+          {filters.map((f) => (
             <ModuleCard
               key={f.title}
               title={f.title}
@@ -201,26 +189,8 @@ export default function BlogScreen() {
           })
         )}
       </ScrollView>
-      {/* Botón de bitácora */}
-      <TouchableOpacity 
-        style={styles.bitacoraButton}
-        onPress={() => navigation.navigate('Bitacora')}
-      >
-        <AntDesign name="book" size={20} color="white" />
-        <Text style={styles.bitacoraButtonText}>Mi Bitácora</Text>
-      </TouchableOpacity>
-
-      {/* Botón de progreso */}
-      <TouchableOpacity 
-        style={styles.progresoButton}
-        onPress={() => navigation.navigate('Progreso')}
-      >
-        <AntDesign name="star" size={20} color="white" />
-        <Text style={styles.progresoButtonText}>Mi Progreso</Text>
-      </TouchableOpacity>
-
-      {/* Botón cerrar sesión */}
-      <LogoutButton />
+      {/* Menú inferior reutilizable */}
+      <PatientBottomNav />
     </View>
   );
 }
@@ -231,11 +201,12 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
     paddingHorizontal: 15,
   },
-  row: {
+  filtersContainer: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
-    marginBottom: 20,
-    width: '100%',
+    gap: 10,
+    marginBottom: 10,
   },
   card: {
     aspectRatio: 1,

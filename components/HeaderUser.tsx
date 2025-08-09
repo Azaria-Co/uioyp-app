@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { getNombreUs } from '../utils/auth';
 import { View, Text, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface HeaderUserProps {
   currentStage: number;
@@ -9,6 +10,7 @@ interface HeaderUserProps {
 
 export default function HeaderUser({ currentStage }: HeaderUserProps) {
   const [nombreUs, setNombreUs] = useState<string | null>(null);
+  const insets = useSafeAreaInsets();
   const today = new Date().toLocaleDateString('es-MX', {
     day: 'numeric',
     month: 'long',
@@ -20,7 +22,7 @@ export default function HeaderUser({ currentStage }: HeaderUserProps) {
   }, []);
 
   return (
-    <View style={styles.headerWrapper}>
+    <View style={[styles.headerWrapper, { paddingTop: Math.max(16, insets.top + 10) }]}>
       <View style={styles.leftSection}>
         <View style={styles.profileCircle} />
         <View style={styles.userInfo}>
@@ -54,7 +56,6 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     padding: 20,
-    paddingTop: 50,
     justifyContent: 'space-between',
   },
   leftSection: {
