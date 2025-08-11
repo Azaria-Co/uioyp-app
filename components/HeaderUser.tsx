@@ -32,17 +32,26 @@ export default function HeaderUser({ currentStage }: HeaderUserProps) {
       </View>
 
       <View style={styles.rightSection}>
-        <View style={styles.progressSteps}>
-        <View style={styles.progressLine} />
-          {[1, 2, 3, 4].map((step) => (
-            <View
-              key={step}
-              style={[
-                styles.circle,
-                step <= currentStage && styles.circleActive,
-              ]}
-            />
-          ))}
+        <View style={styles.progressContainer}>
+          <View style={styles.progressLine} />
+          <View
+            style={[
+              styles.progressFill,
+              { width: `${Math.max(0, Math.min(100, ((currentStage - 1) / 3) * 100))}%` },
+            ]}
+          />
+          <View style={styles.progressSteps}>
+            {[1, 2, 3, 4].map((step) => (
+              <View
+                key={step}
+                style={[
+                  styles.circle,
+                  step <= currentStage && styles.circleActive,
+                  step === currentStage && styles.circleCurrent,
+                ]}
+              />
+            ))}
+          </View>
         </View>
       </View>
     </View>
@@ -89,21 +98,34 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
   },
+  progressContainer: {
+    width: '80%',
+    position: 'relative',
+    height: 44,
+    justifyContent: 'center',
+  },
   progressLine: {
     position: 'absolute',
-    top: 20,
-    left: '10%',
-    right: '10%',
+    left: 0,
+    right: 0,
     height: 4,
     backgroundColor: '#FFA500',
     borderRadius: 2,
     zIndex: 0,
   },
+  progressFill: {
+    position: 'absolute',
+    left: 0,
+    height: 4,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 2,
+    zIndex: 1,
+  },
   progressSteps: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '80%',
-    zIndex: 1,
+    width: '100%',
+    zIndex: 2,
   },
   circle: {
     width: 22,
@@ -115,5 +137,13 @@ const styles = StyleSheet.create({
   },
   circleActive: {
     backgroundColor: 'white',
+  },
+  circleCurrent: {
+    shadowColor: '#FFD700',
+    shadowOpacity: 0.9,
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 6,
+    borderColor: '#FFD700',
+    transform: [{ scale: 1.15 }],
   },
 });

@@ -1,12 +1,13 @@
 // screens/pacientes/BlogScreen.tsx
 import React, { useState, useEffect } from 'react';
-import { ScrollView, StyleSheet, View, Text, TouchableOpacity, ImageSourcePropType, Image, useWindowDimensions } from 'react-native';
+import { ScrollView, StyleSheet, View, Text, TouchableOpacity, ImageSourcePropType, Image, useWindowDimensions, PixelRatio } from 'react-native';
 import { PostCard } from '../../components/PostCard';
 import { getPosts } from '../../api/posts';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/StackNavigator';
 import HeaderUser from '../../components/HeaderUser';
+import { useCurrentStage } from '../../utils/useCurrentStage';
 import LogoutButton from '../../components/LogoutButton';
 import PatientBottomNav, { NAV_HEIGHT } from '../../components/PatientBottomNav';
 import { AntDesign } from '@expo/vector-icons';
@@ -19,6 +20,7 @@ const ModuleCard = ({
   selected,
   onPress,
   cardWidth,
+  isA11y,
 }: {
   title: string;
   color: string;
@@ -26,6 +28,7 @@ const ModuleCard = ({
   selected: boolean;
   onPress: () => void;
   cardWidth: number;
+  isA11y: boolean;
 }) => (
   <TouchableOpacity
     style={[
@@ -35,15 +38,18 @@ const ModuleCard = ({
         borderColor: selected ? color : '#ccc',
         borderWidth: selected ? 2 : 1,
         width: cardWidth,
+        minHeight: Math.max(90, Math.round(cardWidth * 0.9)),
       },
     ]}
     onPress={onPress}
     activeOpacity={0.8}
   >
-    <View style={[styles.cardIcon, { backgroundColor: color }]}> 
-      <Image source={icon} style={styles.iconImage} resizeMode="contain" />
+    <View style={[styles.cardIcon, { backgroundColor: color, width: isA11y ? 48 : 55, height: isA11y ? 48 : 55, borderRadius: isA11y ? 24 : 27.5 }]}> 
+      <Image source={icon} style={[styles.iconImage, { width: isA11y ? 26 : 30, height: isA11y ? 26 : 30 }]} resizeMode="contain" />
     </View>
-    <Text style={[styles.cardText, { color }]}>{title}</Text>
+    <Text style={[styles.cardText, { color, fontSize: isA11y ? 12 : 13 }]} numberOfLines={isA11y ? 2 : 1} ellipsizeMode="tail" allowFontScaling>
+      {title}
+    </Text>
   </TouchableOpacity>
 );
 
@@ -51,6 +57,9 @@ export default function BlogScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [selected, setSelected] = useState<string>('');
   const { width } = useWindowDimensions();
+  const { currentStage } = useCurrentStage();
+  const fontScale = PixelRatio.getFontScale();
+  const isA11y = fontScale > 1.15;
 
   const filters = [
     { title: 'Medicina General', color: '#BFA47A', icon: require('../../assets/icons/medicine.png') },
@@ -122,7 +131,7 @@ export default function BlogScreen() {
   return (
     <View style={styles.container}>
       {/* Componente de encabezado con barra de progreso */}
-      <HeaderUser currentStage={1} />
+      <HeaderUser currentStage={currentStage} />
 
       {/* Cuerpo del blog */}
       <ScrollView contentContainerStyle={[styles.body, { paddingBottom: 30 + NAV_HEIGHT }]}>
@@ -136,6 +145,7 @@ export default function BlogScreen() {
               selected={selected === f.title}
               onPress={() => setSelected(selected === f.title ? '' : f.title)}
               cardWidth={cardWidth}
+              isA11y={isA11y}
             />
           ))}
         </View>

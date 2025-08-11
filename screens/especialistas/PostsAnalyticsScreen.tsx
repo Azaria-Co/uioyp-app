@@ -17,12 +17,15 @@ interface TopPostItem {
 
 function Bar({ label, value, max, color }: { label: string; value: number; max: number; color: string }) {
   const { width } = useWindowDimensions();
-  const maxBar = Math.min(320, Math.max(180, width - 80));
-  const pct = max > 0 ? Math.max(4, Math.round((value / max) * maxBar)) : 4;
+  const contentMax = Math.min(820, width - 32);
+  const barSpace = Math.max(120, Math.round(contentMax * 0.5));
+  const px = max > 0 ? Math.max(6, Math.round((value / Math.max(1, max)) * barSpace)) : 6;
   return (
     <View style={styles.barRow}>
-      <Text style={styles.barLabel} numberOfLines={1}>{label}</Text>
-      <View style={[styles.bar, { width: pct, backgroundColor: color }]} />
+      <Text style={styles.barLabel} numberOfLines={2}>
+        {label}
+      </Text>
+      <View style={[styles.bar, { width: px, backgroundColor: color }]} />
       <Text style={styles.barValue}>{value}</Text>
     </View>
   );
@@ -90,10 +93,12 @@ export default function PostsAnalyticsScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    padding: 16,
     backgroundColor: '#fff',
+    alignItems: 'center',
   },
   backBtn: {
+    alignSelf: 'flex-start',
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
@@ -108,6 +113,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#003087',
     marginBottom: 10,
+    alignSelf: 'center',
   },
   sectionTitle: {
     fontSize: 16,
@@ -115,6 +121,7 @@ const styles = StyleSheet.create({
     color: '#333',
     marginTop: 16,
     marginBottom: 8,
+    alignSelf: 'center',
   },
   panel: {
     backgroundColor: '#f8f9fa',
@@ -122,6 +129,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     padding: 12,
+    width: '100%',
+    maxWidth: 820,
   },
   empty: {
     color: '#666',
@@ -138,6 +147,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 13,
     color: '#333',
+    paddingRight: 8,
   },
   bar: {
     height: 14,

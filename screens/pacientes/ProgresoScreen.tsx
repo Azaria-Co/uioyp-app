@@ -1,5 +1,5 @@
 // screens/pacientes/ProgresoScreen.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   ScrollView, 
   StyleSheet, 
@@ -78,12 +78,26 @@ export default function ProgresoScreen() {
     }
   };
 
+  const currentStage = useMemo(() => {
+    if (!progresos || progresos.length === 0) return 1;
+    // Buscar el progreso más reciente (por fecha si existe, si no por último del arreglo)
+    const sorted = [...progresos].sort((a, b) => {
+      const ad = new Date(a.fecha || 0).getTime();
+      const bd = new Date(b.fecha || 0).getTime();
+      return bd - ad;
+    });
+    const latest = sorted[0];
+    const etapaStr = String(latest.etapa || '');
+    const idx = etapas.findIndex((e) => e === etapaStr);
+    return idx >= 0 ? idx + 1 : 1;
+  }, [progresos]);
+
 
 
   if (loading) {
     return (
       <View style={styles.container}>
-        <HeaderUser currentStage={3} />
+        <HeaderUser currentStage={currentStage} />
         <View style={styles.loadingContainer}>
           <Text style={styles.loadingText}>Cargando tu información...</Text>
         </View>
@@ -94,7 +108,7 @@ export default function ProgresoScreen() {
   if (!idPac) {
     return (
       <View style={styles.container}>
-        <HeaderUser currentStage={3} />
+        <HeaderUser currentStage={currentStage} />
         <View style={styles.errorContainer}>
           <AntDesign name="exclamationcircle" size={50} color="#ff6b6b" />
           <Text style={styles.errorText}>No se encontró tu información de paciente</Text>
@@ -106,11 +120,24 @@ export default function ProgresoScreen() {
 
   return (
     <View style={styles.container}>
-      <HeaderUser currentStage={3} />
+      <HeaderUser currentStage={currentStage} />
 
       <ScrollView contentContainerStyle={[styles.body, { paddingBottom: 90 + NAV_HEIGHT }]}>
         <View style={styles.header}>
           <Text style={styles.title}>Mi Progreso</Text>
+        </View>
+        {/* Solo la barra de progreso aquí */}
+        <View style={{ marginBottom: 16 }}>
+          {/* Usamos el mismo header superior como barra compacta no, mejor replicar una mini barra */}
+          <View style={styles.inlineProgressContainer}>
+            <View style={styles.inlineProgressLine} />
+            <View style={[styles.inlineProgressFill, { width: `${Math.max(0, Math.min(100, ((currentStage - 1) / 3) * 100))}%` }]} />
+            <View style={styles.inlineProgressSteps}>
+              {[1,2,3,4].map((step) => (
+                <View key={step} style={[styles.inlineCircle, step <= currentStage && styles.inlineCircleActive, step === currentStage && styles.inlineCircleCurrent]} />
+              ))}
+            </View>
+          </View>
         </View>
 
         {pacienteInfo && (
@@ -133,7 +160,9 @@ export default function ProgresoScreen() {
         ) : (
           <View style={styles.progressContainer}>
             <Text style={styles.progressTitle}>Tu progreso actual:</Text>
-            {progresos.map((progreso) => (
+            {[...progresos]
+              .sort((a, b) => new Date(b.fecha || 0).getTime() - new Date(a.fecha || 0).getTime())
+              .map((progreso) => (
               <ProgresoCard
                 key={progreso.id}
                 id={progreso.id}
@@ -149,8 +178,16 @@ export default function ProgresoScreen() {
 
 
 
-      {/* Logout cerca del menú inferior, pero sin sobreponerse */}
-      <View style={{ position: 'absolute', bottom: NAV_HEIGHT + 16, left: 0, right: 0 }}>
+      {/* Acceso a Preguntas Frecuentes y Logout */}
+      <View style={{ position: 'absolute', bottom: NAV_HEIGHT + 16, left: 0, right: 0, gap: 10 }}>
+        <View style={{ alignItems: 'center' }}>
+          <TouchableOpacity 
+            style={{ backgroundColor: '#17a2b8', paddingHorizontal: 20, paddingVertical: 12, borderRadius: 12 }}
+            onPress={() => navigation.navigate('Faqs')}
+          >
+            <Text style={{ color: '#fff', fontWeight: 'bold' }}>Preguntas Frecuentes</Text>
+          </TouchableOpacity>
+        </View>
         <LogoutButton inline />
       </View>
 
@@ -252,6 +289,55 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: 'center',
   },
-
-
+  inlineProgressContainer: {
+    width: '86%',
+    alignSelf: 'center',
+    height: 44,
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  inlineProgressLine: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    height: 4,
+    backgroundColor: '#FFA500',
+    borderRadius: 2,
+    zIndex: 0,
+  },
+  inlineProgressFill: {
+    position: 'absolute',
+    left: 0,
+    height: 4,
+    backgroundColor: '#003087',
+    borderRadius: 2,
+    zIndex: 1,
+  },
+  inlineProgressSteps: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    zIndex: 2,
+  },
+  inlineCircle: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#ffffff55',
+    borderWidth: 2,
+    borderColor: '#003087',
+  },
+  inlineCircleActive: {
+    backgroundColor: '#003087',
+  },
+  inlineCircleCurrent: {
+    borderColor: '#FFD700',
+    shadowColor: '#FFD700',
+    shadowOpacity: 0.9,
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 6,
+    transform: [{ scale: 1.1 }],
+  },
 }); 

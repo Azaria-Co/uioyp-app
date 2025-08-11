@@ -70,6 +70,15 @@ export default function HomeSpecialist() {
               <Text style={styles.buttonText}>Gestionar Investigaciones</Text>
             </TouchableOpacity>
           )}
+
+          {/* Preguntas frecuentes - visible para todos los especialistas */}
+          <TouchableOpacity 
+            style={[styles.actionButton, { backgroundColor: '#17a2b8' }]}
+            onPress={() => navigation.navigate('GestionarFaqs')}
+          >
+            <AntDesign name="questioncircleo" size={24} color="white" />
+            <Text style={styles.buttonText}>Preguntas Frecuentes</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={{ width: '100%', alignItems: 'center', marginTop: 20 }}>

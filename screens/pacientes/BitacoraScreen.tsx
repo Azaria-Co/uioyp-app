@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import HeaderUser from '../../components/HeaderUser';
+import { useCurrentStage } from '../../utils/useCurrentStage';
 import LogoutButton from '../../components/LogoutButton';
 import PatientBottomNav, { NAV_HEIGHT } from '../../components/PatientBottomNav';
 import { useNavigation } from '@react-navigation/native';
@@ -26,6 +27,7 @@ import { getPacienteByUsuario } from '../../api/pacientes';
 import { getIdUs } from '../../utils/auth';
 
 export default function BitacoraScreen() {
+  const { currentStage } = useCurrentStage();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { width } = useWindowDimensions();
   const [bitacoras, setBitacoras] = useState<any[]>([]);
@@ -153,7 +155,7 @@ export default function BitacoraScreen() {
   if (loading) {
     return (
       <View style={styles.container}>
-        <HeaderUser currentStage={2} />
+        <HeaderUser currentStage={currentStage} />
         <View style={styles.loadingContainer}>
           <Text style={styles.loadingText}>Cargando tu información...</Text>
         </View>
@@ -164,7 +166,7 @@ export default function BitacoraScreen() {
   if (!idPac) {
     return (
       <View style={styles.container}>
-        <HeaderUser currentStage={2} />
+        <HeaderUser currentStage={currentStage} />
         <View style={styles.errorContainer}>
           <AntDesign name="exclamationcircle" size={50} color="#ff6b6b" />
           <Text style={styles.errorText}>No se encontró tu información de paciente</Text>
@@ -176,7 +178,7 @@ export default function BitacoraScreen() {
 
   return (
     <View style={styles.container}>
-      <HeaderUser currentStage={2} />
+      <HeaderUser currentStage={currentStage} />
 
       <ScrollView contentContainerStyle={[styles.body, { paddingBottom: 30 + NAV_HEIGHT }]}>
         <View style={styles.header}>
