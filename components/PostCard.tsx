@@ -9,7 +9,6 @@ import { getImageUrl } from '../api/multimedia';
 
 interface PostCardProps {
   id: number;
-  author: string;
   title: string;
   area: string;
   areaColor: string;
@@ -22,7 +21,6 @@ interface PostCardProps {
 
 export const PostCard: React.FC<PostCardProps> = ({
   id, // ← destructuramos
-  author,
   title,
   area,
   areaColor,
@@ -63,7 +61,6 @@ export const PostCard: React.FC<PostCardProps> = ({
 
   return (
     <View style={[styles.cardContainer, { width: postWidth, alignSelf: 'center' }]}>
-      <Text style={styles.author}>{author}</Text>
 
       {/* Multimedia del post (imágenes, videos, enlaces) */}
       <PostMultimedia postId={id} width={postWidth} onHasMedia={setHasServerMedia} />

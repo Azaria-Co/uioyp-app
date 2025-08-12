@@ -60,9 +60,9 @@ export default function PostsAnalyticsScreen() {
 
   return (
     <ScrollView contentContainerStyle={[styles.container, { paddingTop: insets.top + 8 }] }>
-      <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
-        <AntDesign name="arrowleft" size={20} color="#003087" />
-        <Text style={styles.backText}>Volver</Text>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <AntDesign name="arrowleft" size={24} color="#003087" />
+        <Text style={styles.backButtonText}>Regresar</Text>
       </TouchableOpacity>
       <Text style={styles.title}>Estadísticas de Posts</Text>
 
@@ -97,16 +97,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
   },
-  backBtn: {
+  backButton: {
     alignSelf: 'flex-start',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#003087',
     marginBottom: 8,
   },
-  backText: {
+  backButtonText: {
     color: '#003087',
-    fontWeight: '600',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 8,
   },
   title: {
     fontSize: 22,

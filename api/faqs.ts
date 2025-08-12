@@ -35,3 +35,4 @@ export async function deleteFaq(id: number, id_esp: number) {
 }
 
 
+

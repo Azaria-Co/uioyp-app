@@ -5,6 +5,7 @@ import { getNombreUs, getIdUs } from '../../utils/auth';
 import CreatePostForm from '../../components/forms/CreatePostForm';
 import { getEspecialistaByUserId } from '../../api/especialistas';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LogoutButton from '../../components/LogoutButton';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -14,6 +15,7 @@ import { AntDesign } from '@expo/vector-icons';
 
 export default function HomeSpecialist() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const insets = useSafeAreaInsets();
   const [nombreUs, setNombreUs] = useState<string | null>(null);
   const [idUs, setIdUs] = useState<number | null>(null);
   const [especialista, setEspecialista] = useState<any>(null);
@@ -38,7 +40,7 @@ export default function HomeSpecialist() {
   return (
     <View style={styles.container}>
       <ScrollView 
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 12 }]}
         showsVerticalScrollIndicator={false}
       >
         <Text style={styles.title}>Bienvenid@, {nombreUs}</Text>
@@ -97,6 +99,17 @@ export default function HomeSpecialist() {
             <Text style={styles.buttonText}>Ver estadísticas de posts</Text>
           </TouchableOpacity>
         </View>
+
+        {/* Ver info de pacientes */}
+        <View style={{ width: '100%', paddingHorizontal: 20, marginTop: 10 }}>
+          <TouchableOpacity 
+            style={[styles.actionButton, { backgroundColor: '#6c757d' }]}
+            onPress={() => navigation.navigate('VerPacientesInfo')}
+          >
+            <AntDesign name="profile" size={24} color="white" />
+            <Text style={styles.buttonText}>Info de pacientes</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
       <LogoutButton />
     </View>
@@ -107,7 +120,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
   scrollContent: { 
     flexGrow: 1, 
-    justifyContent: 'center', 
+    justifyContent: 'flex-start', 
     alignItems: 'center', 
     paddingVertical: 20,
     paddingBottom: 120, // Espacio extra para el botón de logout

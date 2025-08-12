@@ -8,6 +8,7 @@ import {
   TouchableOpacity, 
   Alert
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AntDesign } from '@expo/vector-icons';
 import HeaderUser from '../../components/HeaderUser';
 import LogoutButton from '../../components/LogoutButton';
@@ -22,6 +23,7 @@ import ProgresoCard from '../../components/ProgresoCard';
 
 export default function ProgresoScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const insets = useSafeAreaInsets();
   const [progresos, setProgresos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [idPac, setIdPac] = useState<number | null>(null);
@@ -142,9 +144,15 @@ export default function ProgresoScreen() {
 
         {pacienteInfo && (
           <View style={styles.patientInfo}>
-            <Text style={styles.patientName}>{pacienteInfo.nombre_us}</Text>
+            <Text style={styles.patientName}>Perfil del paciente</Text>
+            {pacienteInfo.masa_muscular !== undefined && pacienteInfo.masa_muscular !== null && (
+              <Text style={styles.patientDetails}>Masa muscular: {pacienteInfo.masa_muscular}</Text>
+            )}
             {pacienteInfo.tipo_sangre && (
               <Text style={styles.patientDetails}>Tipo de sangre: {pacienteInfo.tipo_sangre}</Text>
+            )}
+            {pacienteInfo.enfer_pat && (
+              <Text style={styles.patientDetails}>Enfermedad: {pacienteInfo.enfer_pat}</Text>
             )}
           </View>
         )}
@@ -178,16 +186,8 @@ export default function ProgresoScreen() {
 
 
 
-      {/* Acceso a Preguntas Frecuentes y Logout */}
-      <View style={{ position: 'absolute', bottom: NAV_HEIGHT + 16, left: 0, right: 0, gap: 10 }}>
-        <View style={{ alignItems: 'center' }}>
-          <TouchableOpacity 
-            style={{ backgroundColor: '#17a2b8', paddingHorizontal: 20, paddingVertical: 12, borderRadius: 12 }}
-            onPress={() => navigation.navigate('Faqs')}
-          >
-            <Text style={{ color: '#fff', fontWeight: 'bold' }}>Preguntas Frecuentes</Text>
-          </TouchableOpacity>
-        </View>
+      {/* Logout — flotante y visible sobre el bottom nav */}
+      <View style={{ position: 'absolute', bottom: NAV_HEIGHT + Math.max(12, insets.bottom + 6), left: 0, right: 0 }}>
         <LogoutButton inline />
       </View>
 

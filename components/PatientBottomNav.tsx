@@ -38,6 +38,11 @@ export default function PatientBottomNav() {
         <AntDesign name="user" size={20} color={current === 'Progreso' ? '#003087' : '#666'} />
         <Text style={[styles.label, current === 'Progreso' && styles.labelActive]}>Perfil</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity style={styles.item} onPress={() => goTo('Faqs')}>
+        <AntDesign name="questioncircleo" size={20} color={current === 'Faqs' ? '#003087' : '#666'} />
+        <Text style={[styles.label, current === 'Faqs' && styles.labelActive]}>Info</Text>
+      </TouchableOpacity>
     </View>
   );
 }

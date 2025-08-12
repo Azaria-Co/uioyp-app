@@ -117,12 +117,13 @@ export default function GestionarFaqsScreen() {
               </View>
             )}
             ListFooterComponent={
-              <View style={{ paddingVertical: 14 }}>
+              <View style={{ paddingVertical: 14, alignItems: 'center' }}>
                 <TouchableOpacity
-                  style={{ backgroundColor: '#6c757d', paddingVertical: 12, borderRadius: 10, alignItems: 'center' }}
+                  style={styles.backButton}
                   onPress={() => navigation.navigate('HomeSpecialist')}
                 >
-                  <Text style={{ color: '#fff', fontWeight: '700' }}>Volver</Text>
+                  <AntDesign name="arrowleft" size={24} color="#003087" />
+                  <Text style={styles.backButtonText}>Regresar</Text>
                 </TouchableOpacity>
               </View>
             }
@@ -149,6 +150,17 @@ const styles = StyleSheet.create({
   faqA: { color: '#444', marginBottom: 10 },
   deleteButton: { alignSelf: 'flex-start', flexDirection: 'row', gap: 6, backgroundColor: '#dc3545', paddingVertical: 8, paddingHorizontal: 12, borderRadius: 8 },
   deleteText: { color: '#fff', fontWeight: '600' },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#003087',
+  },
+  backButtonText: { color: '#003087', fontSize: 16, fontWeight: 'bold', marginLeft: 8 },
 });
 
 

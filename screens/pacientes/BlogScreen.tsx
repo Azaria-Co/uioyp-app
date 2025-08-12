@@ -8,7 +8,6 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/StackNavigator';
 import HeaderUser from '../../components/HeaderUser';
 import { useCurrentStage } from '../../utils/useCurrentStage';
-import LogoutButton from '../../components/LogoutButton';
 import PatientBottomNav, { NAV_HEIGHT } from '../../components/PatientBottomNav';
 import { AntDesign } from '@expo/vector-icons';
 
@@ -181,12 +180,11 @@ export default function BlogScreen() {
               'General': '#9D9D9D',
             };
             const areaStr = String(post.area || (post.especialista && post.especialista.area) || '');
-            const author = post.especialista && post.especialista.nombre_us ? post.especialista.nombre_us : (post.autor || post.author || 'Especialista');
+            const author = post.autor || post.author || 'Especialista';
             return (
               <PostCard  
                 key={post.id || index}
                 id={post.id}
-                author={author}
                 title={post.titulo || post.title || ''}
                 area={areaStr}
                 areaColor={areaColors[areaStr] || '#003087'}
