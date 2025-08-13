@@ -1,6 +1,8 @@
 // api/usuarios.ts
 import { API_URL } from "./config";
 
+export {};
+
 export async function login(nombre_us: string) {
   const res = await fetch(`${API_URL}/usuarios/auth/login`, {
     method: 'POST',

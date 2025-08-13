@@ -5,6 +5,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/StackNavigator';
 import { login } from '../api/usuarios';
 import { saveToken, saveNombreUs, getIdUsFromToken, saveIdUs } from '../utils/auth';
+import { scheduleDailyReminderIfNeeded } from '../utils/notifications';
 
 
 export default function LoginScreen() {
@@ -29,6 +30,9 @@ export default function LoginScreen() {
         console.warn('No se pudo extraer id_us del token');
       }
       console.log('Token y datos guardados correctamente');
+
+      // Programa recordatorio diario en segundo plano
+      scheduleDailyReminderIfNeeded(21, 0).catch(() => {});
 
       // Redirige según el rol
       if (response.rol === 1) {

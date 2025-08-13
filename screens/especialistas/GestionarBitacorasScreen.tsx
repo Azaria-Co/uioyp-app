@@ -21,6 +21,7 @@ import { getEspecialistaByUserId } from '../../api/especialistas';
 import { getIdUs } from '../../utils/auth';
 import LogoutButton from '../../components/LogoutButton';
 import BitacoraCard from '../../components/BitacoraCard';
+import { createPatientReminder } from '../../api/push';
 
 interface PacienteCardProps {
   paciente: any;
@@ -105,6 +106,18 @@ export default function GestionarBitacorasScreen() {
     }
   };
 
+  const handleScheduleReminders = async (paciente: any) => {
+    if (!especialista) return;
+    try {
+      // 19:00 y 20:00
+      await createPatientReminder(paciente.id, 19, 0, especialista.id);
+      await createPatientReminder(paciente.id, 20, 0, especialista.id);
+      Alert.alert('Éxito', 'Se agendaron recordatorios a las 7:00 pm y 8:00 pm');
+    } catch (e: any) {
+      Alert.alert('Error', e.message || 'No se pudieron agendar recordatorios');
+    }
+  };
+
   const handleDelete = async (id: number) => {
     Alert.alert(
       'Confirmar eliminación',
@@ -176,11 +189,18 @@ export default function GestionarBitacorasScreen() {
           </View>
         ) : (
           pacientes.map((paciente) => (
-            <PacienteCard
-              key={paciente.id}
-              paciente={paciente}
-              onViewBitacoras={handleViewBitacoras}
-            />
+            <View key={paciente.id}>
+              <PacienteCard
+                paciente={paciente}
+                onViewBitacoras={handleViewBitacoras}
+              />
+              <View style={{ flexDirection: 'row', gap: 10, marginHorizontal: 15, marginTop: 6, marginBottom: 4 }}>
+                <TouchableOpacity style={styles.remButton} onPress={() => handleScheduleReminders(paciente)}>
+                  <AntDesign name="bells" size={16} color="#fff" />
+                  <Text style={styles.remButtonText}>Agendar 7pm y 8pm</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           ))
         )}
       </ScrollView>
@@ -414,5 +434,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 8,
+  },
+  remButton: {
+    backgroundColor: '#28a745',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  remButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 12,
   },
 }); 

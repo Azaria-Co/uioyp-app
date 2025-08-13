@@ -1,6 +1,6 @@
 // screens/admin/AdminScreen.tsx
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Alert, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Alert, ScrollView, TouchableOpacity, ActivityIndicator, TextInput } from 'react-native';
 import LogoutButton from '../../components/LogoutButton';
 import UserForm from '../../components/forms/UserForm';
 import SpecialistForm from '../../components/forms/SpecialistForm';
@@ -19,6 +19,11 @@ export default function AdminScreen() {
   const [enferPat, setEnferPat] = useState('');
   const [telefono, setTelefono] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Global reminder time
+  const [remHour, setRemHour] = useState('21');
+  const [remMinute, setRemMinute] = useState('0');
+  const [savingReminder, setSavingReminder] = useState(false);
 
   const resetForm = () => {
     setNombreUs(''); setRol(''); setArea(''); setMasaMuscular(''); setTipoSangre(''); setEnferPat(''); setTelefono('');
@@ -58,6 +63,29 @@ export default function AdminScreen() {
     }
   };
 
+  const handleSaveReminder = async () => {
+    const h = Number(remHour);
+    const m = Number(remMinute);
+    if (!Number.isFinite(h) || !Number.isFinite(m) || h < 0 || h > 23 || m < 0 || m > 59) {
+      Alert.alert('Error', 'Hora inválida');
+      return;
+    }
+    setSavingReminder(true);
+    try {
+      const res = await fetch(`${API_URL}/push/reminder-time`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hour: h, minute: m })
+      });
+      if (!res.ok) throw new Error('No se pudo guardar la hora');
+      Alert.alert('Éxito', 'Hora de recordatorio actualizada');
+    } catch (e: any) {
+      Alert.alert('Error', e.message || 'No se pudo guardar');
+    } finally {
+      setSavingReminder(false);
+    }
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Panel de Administrador</Text>
@@ -79,6 +107,48 @@ export default function AdminScreen() {
           {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Crear usuario</Text>}
         </TouchableOpacity>
       </View>
+
+      <View style={styles.formBox}>
+        <Text style={{ fontWeight: 'bold', marginBottom: 10 }}>Recordatorio diario de bitácora (global)</Text>
+        <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+          <TouchableOpacity style={styles.smallButton} onPress={() => setRemHour('19')}><Text style={styles.smallButtonText}>19</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.smallButton} onPress={() => setRemHour('20')}><Text style={styles.smallButtonText}>20</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.smallButton} onPress={() => setRemHour('21')}><Text style={styles.smallButtonText}>21</Text></TouchableOpacity>
+          <TouchableOpacity style={[styles.smallButton, { backgroundColor: '#6c757d' }]} onPress={() => setRemMinute('0')}><Text style={styles.smallButtonText}>:00</Text></TouchableOpacity>
+          <TouchableOpacity style={[styles.smallButton, { backgroundColor: '#6c757d' }]} onPress={() => setRemMinute('30')}><Text style={styles.smallButtonText}>:30</Text></TouchableOpacity>
+        </View>
+
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 }}>
+          <Text>Hora:</Text>
+          <TextInput
+            style={styles.timeInput}
+            value={remHour}
+            onChangeText={(t) => setRemHour(t.replace(/[^0-9]/g, ''))}
+            keyboardType="number-pad"
+            placeholder="HH"
+            maxLength={2}
+          />
+          <Text>:</Text>
+          <TextInput
+            style={styles.timeInput}
+            value={remMinute}
+            onChangeText={(t) => setRemMinute(t.replace(/[^0-9]/g, ''))}
+            keyboardType="number-pad"
+            placeholder="MM"
+            maxLength={2}
+          />
+          <Text style={{ marginLeft: 6 }}>(0-23 / 0-59)</Text>
+        </View>
+
+        <Text style={{ marginTop: 8 }}>Actual: {remHour}:{remMinute.padStart(2, '0')}</Text>
+
+        <View style={{ flexDirection: 'row', gap: 10, marginTop: 10 }}>
+          <TouchableOpacity style={styles.button} onPress={handleSaveReminder} disabled={savingReminder}>
+            {savingReminder ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Guardar hora</Text>}
+          </TouchableOpacity>
+        </View>
+      </View>
+
       <LogoutButton />
     </ScrollView>
   );
@@ -90,4 +160,17 @@ const styles = StyleSheet.create({
   formBox: { width: '100%', maxWidth: 400, backgroundColor: '#f7f7f7', borderRadius: 12, padding: 20, marginBottom: 30 },
   button: { backgroundColor: '#003087', padding: 15, borderRadius: 10, alignItems: 'center', marginTop: 10 },
   buttonText: { color: 'white', fontWeight: 'bold' },
+  smallButton: { backgroundColor: '#003087', paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8 },
+  smallButtonText: { color: 'white', fontWeight: 'bold' },
+  timeInput: {
+    width: 50,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    textAlign: 'center',
+    fontWeight: '600',
+  },
 });
