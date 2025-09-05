@@ -1,4 +1,4 @@
 // api/config.ts
-export const API_URL = "http://192.168.100.85:3001"; // Cámbialo por tu IP local
+export const API_URL = "http://10.10.100.74:3000"; // Cambiar por IP local o IP del servidor
 
 
