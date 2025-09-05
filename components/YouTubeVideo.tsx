@@ -49,17 +49,19 @@ export default function YouTubeVideo({
     <View style={[styles.container, { width, alignSelf: 'center' }] }>
       {titulo && <Text style={styles.titulo}>{titulo}</Text>}
       
-      <View style={styles.videoContainer}>
-        <YoutubePlayer
-          height={height}
-          width={width}
-          play={playing}
-          videoId={videoId}
-          onChangeState={(state) => {
-            setPlaying(state === 'playing');
-          }}
-          onError={handleError}
-        />
+      <View style={[styles.videoOuter, { width: width - 20 }]}> 
+        <View style={styles.videoContainer}>
+          <YoutubePlayer
+            height={height}
+            width={width - 40}
+            play={playing}
+            videoId={videoId}
+            onChangeState={(state) => {
+              setPlaying(state === 'playing');
+            }}
+            onError={handleError}
+          />
+        </View>
       </View>
 
       {/* Compacto: sin botón extra */}
@@ -80,6 +82,17 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#003087',
     marginBottom: 8,
+  },
+  videoOuter: {
+    padding: 10,
+    borderRadius: 12,
+    backgroundColor: '#fff',
+    alignSelf: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.15,
+    shadowRadius: 2,
   },
   videoContainer: {
     borderRadius: 8,
