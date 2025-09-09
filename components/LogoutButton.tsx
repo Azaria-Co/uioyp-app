@@ -16,7 +16,10 @@ export default function LogoutButton({ inline = false, style }: LogoutButtonProp
 
   const handleLogout = async () => {
     await clearToken();
-    navigation.replace('Login');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    });
   };
 
   const buttonStyle = [inline ? styles.inlineButton : styles.logoutButton, style];

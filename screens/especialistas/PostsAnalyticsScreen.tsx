@@ -149,6 +149,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
     marginVertical: 6,
+    flex: 1,
+    paddingHorizontal: 8,
   },
   barLabel: {
     flex: 1,
@@ -167,5 +169,3 @@ const styles = StyleSheet.create({
     color: '#333',
   },
 });
-
-
