@@ -112,7 +112,7 @@ export default function ProgresoScreen() {
       <View style={styles.container}>
         <HeaderUser currentStage={currentStage} />
         <View style={styles.errorContainer}>
-          <AntDesign name="exclamationcircle" size={50} color="#ff6b6b" />
+          <AntDesign name="exclamation-circle" size={50} color="#ff6b6b" />
           <Text style={styles.errorText}>No se encontró tu información de paciente</Text>
           <Text style={styles.errorSubtext}>Contacta a tu especialista para configurar tu perfil</Text>
         </View>

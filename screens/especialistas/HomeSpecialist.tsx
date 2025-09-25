@@ -68,7 +68,7 @@ export default function HomeSpecialist() {
               style={[styles.actionButton, styles.investigacionButton]}
               onPress={() => navigation.navigate('GestionarInvestigaciones')}
             >
-              <AntDesign name="search1" size={24} color="white" />
+              <AntDesign name="search" size={24} color="white" />
               <Text style={styles.buttonText}>Gestionar Investigaciones</Text>
             </TouchableOpacity>
           )}
@@ -78,7 +78,7 @@ export default function HomeSpecialist() {
             style={[styles.actionButton, { backgroundColor: '#17a2b8' }]}
             onPress={() => navigation.navigate('GestionarFaqs')}
           >
-            <AntDesign name="questioncircleo" size={24} color="white" />
+            <AntDesign name="question-circle" size={24} color="white" />
             <Text style={styles.buttonText}>Preguntas Frecuentes</Text>
           </TouchableOpacity>
         </View>
@@ -95,7 +95,7 @@ export default function HomeSpecialist() {
             style={[styles.actionButton, { backgroundColor: '#ff7f50' }]}
             onPress={() => navigation.navigate('PostsAnalytics')}
           >
-            <AntDesign name="areachart" size={24} color="white" />
+            <AntDesign name="area-chart" size={24} color="white" />
             <Text style={styles.buttonText}>Ver estadísticas de posts</Text>
           </TouchableOpacity>
         </View>

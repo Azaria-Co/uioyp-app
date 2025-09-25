@@ -197,14 +197,14 @@ export default function GestionarInvestigacionesScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <AntDesign name="arrowleft" size={24} color="#003087" />
+          <AntDesign name="arrow-left" size={24} color="#003087" />
         </TouchableOpacity>
         <Text style={styles.title}>Mis Investigaciones</Text>
       </View>
 
       {investigaciones.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <AntDesign name="search1" size={64} color="#ccc" />
+          <AntDesign name="search" size={64} color="#ccc" />
           <Text style={styles.emptyText}>
             Aún no has creado investigaciones.
           </Text>

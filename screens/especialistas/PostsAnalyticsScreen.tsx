@@ -61,7 +61,7 @@ export default function PostsAnalyticsScreen() {
   return (
     <ScrollView contentContainerStyle={[styles.container, { paddingTop: insets.top + 8 }] }>
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <AntDesign name="arrowleft" size={24} color="#003087" />
+        <AntDesign name="arrow-left" size={24} color="#003087" />
         <Text style={styles.backButtonText}>Regresar</Text>
       </TouchableOpacity>
       <Text style={styles.title}>Estadísticas de Posts</Text>

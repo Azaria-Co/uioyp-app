@@ -93,7 +93,7 @@ export default function GestionarFaqsScreen() {
                     multiline
                   />
                   <TouchableOpacity style={styles.createButton} onPress={handleCreate} disabled={!pregunta.trim() || !respuesta.trim()}>
-                    <AntDesign name="pluscircleo" size={20} color="#fff" />
+                    <AntDesign name="plus-circle" size={20} color="#fff" />
                     <Text style={styles.createButtonText}>Crear FAQ</Text>
                   </TouchableOpacity>
                 </View>
@@ -122,7 +122,7 @@ export default function GestionarFaqsScreen() {
                   style={styles.backButton}
                   onPress={() => navigation.navigate('HomeSpecialist')}
                 >
-                  <AntDesign name="arrowleft" size={24} color="#003087" />
+                  <AntDesign name="arrow-left" size={24} color="#003087" />
                   <Text style={styles.backButtonText}>Regresar</Text>
                 </TouchableOpacity>
               </View>

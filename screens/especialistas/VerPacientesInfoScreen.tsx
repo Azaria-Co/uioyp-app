@@ -69,7 +69,7 @@ export default function VerPacientesInfoScreen() {
 
         <View style={styles.bottomContainer}>
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-            <AntDesign name="arrowleft" size={24} color="#003087" />
+            <AntDesign name="arrow-left" size={24} color="#003087" />
             <Text style={styles.backButtonText}>Regresar</Text>
           </TouchableOpacity>
         </View>

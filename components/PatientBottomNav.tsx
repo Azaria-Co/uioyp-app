@@ -40,7 +40,7 @@ export default function PatientBottomNav() {
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.item} onPress={() => goTo('Faqs')}>
-        <AntDesign name="questioncircleo" size={20} color={current === 'Faqs' ? '#003087' : '#666'} />
+        <AntDesign name="question-circle" size={20} color={current === 'Faqs' ? '#003087' : '#666'} />
         <Text style={[styles.label, current === 'Faqs' && styles.labelActive]}>Info</Text>
       </TouchableOpacity>
     </View>

@@ -176,7 +176,7 @@ export default function GestionarProgresoScreen() {
     return (
       <View style={styles.container}>
         <View style={styles.errorContainer}>
-          <AntDesign name="exclamationcircle" size={50} color="#ff6b6b" />
+          <AntDesign name="exclamation-circle" size={50} color="#ff6b6b" />
           <Text style={styles.errorText}>No se encontró tu información de especialista</Text>
           <Text style={styles.errorSubtext}>Contacta al administrador para configurar tu perfil</Text>
         </View>
@@ -293,7 +293,7 @@ export default function GestionarProgresoScreen() {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <AntDesign name="arrowleft" size={24} color="#003087" />
+          <AntDesign name="arrow-left" size={24} color="#003087" />
           <Text style={styles.backButtonText}>Regresar</Text>
         </TouchableOpacity>
       </View>

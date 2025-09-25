@@ -36,10 +36,14 @@ export default function YouTubeVideo({
     }
   };
 
+  const handleChangeState = (state: string) => {
+    setPlaying(state === 'playing');
+  };
+
   if (error) {
     return (
-      <View style={[styles.errorContainer, { width }]}>
-        <AntDesign name="videocamera" size={32} color="#ccc" />
+      <View style={[styles.errorContainer, { width }]}> 
+        <AntDesign name="video-camera" size={32} color="#ccc" />
         <Text style={styles.errorText}>Error al cargar video</Text>
       </View>
     );
@@ -56,9 +60,7 @@ export default function YouTubeVideo({
             width={width - 40}
             play={playing}
             videoId={videoId}
-            onChangeState={(state) => {
-              setPlaying(state === 'playing');
-            }}
+            onChangeState={handleChangeState}
             onError={handleError}
           />
         </View>

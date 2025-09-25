@@ -56,7 +56,7 @@ export default function LinkPreview({
         )}
         
         <View style={styles.urlContainer}>
-          <AntDesign name="earth" size={12} color="#666" />
+          <AntDesign name="global" size={12} color="#666" />
           <Text style={styles.domain} numberOfLines={1}>
             {getDomainFromUrl(url)}
           </Text>

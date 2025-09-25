@@ -11,6 +11,7 @@ import {
   useWindowDimensions 
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+// CORRECCIÓN: El nombre de la librería es @expo/vector-icons
 import { AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -157,7 +158,8 @@ export default function GestionarBitacorasScreen() {
     return (
       <View style={styles.container}>
         <View style={styles.errorContainer}>
-          <AntDesign name="exclamationcircle" size={50} color="#ff6b6b" />
+          {/* CORRECCIÓN: El nombre del icono es "exclamationcircleo" o "exclamation-circle" */}
+          <AntDesign name="exclamation-circle" size={50} color="#ff6b6b" /> 
           <Text style={styles.errorText}>No se encontró tu información de especialista</Text>
           <Text style={styles.errorSubtext}>Contacta al administrador para configurar tu perfil</Text>
         </View>
@@ -196,7 +198,8 @@ export default function GestionarBitacorasScreen() {
               />
               <View style={{ flexDirection: 'row', gap: 10, marginHorizontal: 15, marginTop: 6, marginBottom: 4 }}>
                 <TouchableOpacity style={styles.remButton} onPress={() => handleScheduleReminders(paciente)}>
-                  <AntDesign name="bells" size={16} color="#fff" />
+                  {/* CORRECCIÓN: El nombre del icono es "bells" */}
+                  <AntDesign name="bell" size={16} color="#fff" />
                   <Text style={styles.remButtonText}>Agendar 7pm y 8pm</Text>
                 </TouchableOpacity>
               </View>
@@ -251,7 +254,8 @@ export default function GestionarBitacorasScreen() {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <AntDesign name="arrowleft" size={24} color="#003087" />
+          {/* CORRECCIÓN: El nombre del icono es "arrowleft" */}
+          <AntDesign name="arrow-left" size={24} color="#003087" />
           <Text style={styles.backButtonText}>Regresar</Text>
         </TouchableOpacity>
       </View>
@@ -449,4 +453,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 12,
   },
-}); 
+});
