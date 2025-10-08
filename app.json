@@ -1,12 +1,13 @@
 {
   "expo": {
-    "name": "uioyp-app-new",
-    "slug": "uioyp-app-new",
+    "name": "uioyp-app",
+    "slug": "uioyp-app",
+    "owner": "alexid",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -21,10 +22,26 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "package": "com.alexid.uioypapp",
+      "permissions": [
+        "INTERNET",
+        "ACCESS_NETWORK_STATE",
+        "VIBRATE",
+        "RECEIVE_BOOT_COMPLETED"
+      ],
+      "usesCleartextTraffic": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-video",
+      "expo-notifications"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "ee17b4f2-e8f0-4ed4-a163-b8e3a731f6f7"
+      }
     }
   }
 }
