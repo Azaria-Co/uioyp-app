@@ -41,11 +41,12 @@ export default function PostMultimedia({ postId, width = 300, onHasMedia }: Post
   return (
     <View style={[styles.container, { width, alignSelf: 'center', paddingHorizontal: 10 }] }>
       {multimedia.map((item) => {
-        if (item.tipo === 'image' && item.filename) {
+        // CAMBIO CLAVE: Ahora usamos item.id en getImageUrl()
+        if (item.tipo === 'image' && item.id) { 
           return (
             <PostMedia 
               key={item.id}
-              source={{ uri: getImageUrl(item.filename) }}
+              source={{ uri: getImageUrl(item.id) }} // <-- CAMBIADO: item.filename a item.id
               maxWidth={innerWidth}
             />
           );

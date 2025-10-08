@@ -16,7 +16,7 @@ export interface MultimediaFile {
   id_post: number;
 }
 
-export async function uploadImage(imageUri: string, idPost?: number): Promise<MultimediaFile> {
+export async function uploadFile(imageUri: string, idPost?: number): Promise<MultimediaFile> {
   const token = await getToken();
   if (!token) throw new Error('No autenticado');
 
@@ -97,8 +97,8 @@ export async function getPostMedia(postId: number): Promise<MultimediaFile[]> {
   }
 }
 
-export function getImageUrl(filename: string): string {
-  return `${API_URL}/multimedia/file/${filename}`;
+export function getImageUrl(id: number): string {
+  return `${API_URL}/multimedia/file/${id}`;
 }
 
 export function extractYouTubeId(url: string): string | null {

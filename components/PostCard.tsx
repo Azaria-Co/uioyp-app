@@ -39,12 +39,12 @@ export const PostCard: React.FC<PostCardProps> = ({
 
   const postWidth = width > 600 ? Math.min(500, width * 0.7) : width - 40;
 
-  // Construir la fuente de imagen (BACK-compat) — mostraremos solo si no hay multimedia cargada
-  const imageSource = image?.filename 
-    ? { uri: getImageUrl(image.filename) }
+  const imageSource = image?.id 
+    ? { uri: getImageUrl(image.id) }
     : image?.uri 
     ? { uri: image.uri }
     : undefined;
+    
   const [hasServerMedia, setHasServerMedia] = useState<boolean>(false);
 
   const formatDate = (dateStr: string) => {

@@ -4,7 +4,7 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator,
 import { getIdUs, getToken } from '../../utils/auth';
 import { API_URL } from '../../api/config';
 import * as ImagePicker from 'expo-image-picker';
-import { uploadImage, createAdvancedMultimedia } from '../../api/multimedia';
+import { uploadFile, createAdvancedMultimedia } from '../../api/multimedia';
 import { AntDesign } from '@expo/vector-icons';
 
 interface CreatePostFormProps {
@@ -108,7 +108,7 @@ export default function CreatePostForm({ area, id_esp, onPostCreated }: CreatePo
       if (multimediaType && data.id) {
         try {
           if (multimediaType === 'image' && selectedImage) {
-            await uploadImage(selectedImage, data.id);
+            await uploadFile(selectedImage, data.id);
           } else if (multimediaType === 'video' && videoUrl) {
             await createAdvancedMultimedia({
               tipo: 'video',
